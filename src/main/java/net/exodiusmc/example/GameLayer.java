@@ -19,7 +19,7 @@ public class GameLayer implements Layer {
 
 	@Override
 	public void render(GraphicsContext gfx) {
-		gfx.drawImage(ground, 0, 0);
+		gfx.drawImage(ground, 0, 0, ground.getWidth() * 0.6, ground.getHeight() * 0.6);
 	}
 
 	@Override

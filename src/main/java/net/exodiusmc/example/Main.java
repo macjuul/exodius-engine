@@ -15,11 +15,16 @@ public class Main extends ExodiusEngine {
 	@Override
 	public void init(Stage window, Runtime run) {
 	    FileUtils.setResourceDirectory("net/exodiusmc/example");
-	    this.window = window;
+	    Main.window = window;
 	    
-		window.setHeight(523);
-		window.setWidth(528);
+	    window.setResizable(false);
+	    
+		window.setHeight(610);
+		window.setWidth(620);
 		window.setTitle("Monster hunt");
+		window.getIcons().add(FileUtils.LoadImage("head_128.png"));
+		window.getIcons().add(FileUtils.LoadImage("head_32.png"));
+		window.getIcons().add(FileUtils.LoadImage("head_16.png"));
 		window.show();
 		
 		
