@@ -33,7 +33,8 @@ public class Runtime extends AnimationTimer {
 	        	if(stackSize - 1 != c && !l.renderOnCover()) {
 	        		continue;
 	        	}
-	        	l.update(this.gfx);
+	        	l.update(this.delta, this.frame);
+	        	l.render(this.gfx);
 	        }
 	    }
 	}

@@ -3,6 +3,7 @@ package net.exodiusmc.engine;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -28,6 +29,7 @@ public abstract class ExodiusEngine extends Application {
 		this.layerManager = new LayerManager();
 		
 		StackPane p = new StackPane();
+		p.setPadding(new Insets(43, 0, 0, 16));
 		Canvas cvs = new Canvas(this.width, this.height);
 		p.getChildren().add(cvs);
 		Scene s = new Scene(p, this.width, this.height);
@@ -39,18 +41,18 @@ public abstract class ExodiusEngine extends Application {
 		this.window.setHeight(this.height);
 		
 		window.widthProperty().addListener(new ChangeListener<Number>() {
-			@Override
+		    @Override
 			public void changed(ObservableValue<? extends Number> ov, Number widthOld, Number widthNew) {
-				window.setWidth((double) widthNew);
-				getGraphics().getCanvas().setWidth((double) widthNew);
+				window.setWidth(widthNew.doubleValue());
+				getGraphics().getCanvas().setWidth(widthNew.doubleValue());
 			}
 		});
 		
 		window.heightProperty().addListener(new ChangeListener<Number>() {
-			@Override
+		    @Override
 			public void changed(ObservableValue<? extends Number> ov, Number heightOld, Number heightNew) {
-				window.setHeight((double) heightNew);
-				getGraphics().getCanvas().setHeight((double) heightNew);
+				window.setHeight(heightNew.doubleValue());
+				getGraphics().getCanvas().setHeight(heightNew.doubleValue());
 			}
 		});
 		

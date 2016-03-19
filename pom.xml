@@ -11,11 +11,38 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.3</version>
-        <configuration>
-          <source/>
-          <target/>
-        </configuration>
       </plugin>
+      <plugin>
+	      <artifactId>maven-assembly-plugin</artifactId>
+	      <configuration>
+	        <descriptorRefs>
+	          <descriptorRef>jar-with-dependencies</descriptorRef>
+	        </descriptorRefs>
+	        <finalName>${project.artifactId}-${project.version}</finalName>
+	        <archive>
+	          <manifest>
+	            <mainClass>net.exodiusmc.example.Main</mainClass>
+	          </manifest>
+	        </archive>
+	        <appendAssemblyId>false</appendAssemblyId>
+	      </configuration>
+	      <executions>
+	        <execution>
+	          <phase>package</phase>
+	          <goals>
+	            <goal>single</goal>
+	          </goals>
+	        </execution>
+	      </executions>
+	    </plugin>
     </plugins>
   </build>
+  <dependencies>
+  	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.10</version>
+		<scope>test</scope>
+	</dependency>
+  </dependencies>
 </project>
