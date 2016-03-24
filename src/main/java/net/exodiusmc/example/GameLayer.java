@@ -1,5 +1,8 @@
 package net.exodiusmc.example;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -11,12 +14,20 @@ import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.shape.Rectangle;
+import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
 
 public class GameLayer implements Layer {
 	private Image groundImg;
     private Image heroImg;
+    private Image heroBack;
     private Image monsterHead;
+    private Image monsterImg;
+    private Image heartFull;
+    private Image heartEmpty;
+    private Image heartPower;
+    private Image heartExtra;
+    private Image trees;
     private Hero hero;
     private SpriteAnimation heroSprite;
     private Rectangle playField;
@@ -24,26 +35,33 @@ public class GameLayer implements Layer {
     private boolean updateSprite;
     private Font scoreFont;
     private int score;
-    private Location center;
+    private int heartSize = 20;
+    
+    public ArrayList<Monster> monsters;
+    public ArrayList<HeartEntity> hearts;
     
     public GameLayer() {
     	this.groundImg = FileUtils.LoadImage("ground.png");
+    	this.heroBack = FileUtils.LoadImage("hero_anim_back.png");
         this.heroImg = FileUtils.LoadImage("hero_anim.png");
-        this.playField = new Rectangle(new Location(50, 125), new Location(564, 590));
+        this.monsterImg = FileUtils.LoadImage("monster.png");
+        this.heartEmpty = FileUtils.LoadImage("heart_empty.png");
+        this.heartFull = FileUtils.LoadImage("heart_full.png");
+        this.heartPower = FileUtils.LoadImage("heart_power.png");
+        this.heartExtra = FileUtils.LoadImage("heart_plus.png");
+        this.trees = FileUtils.LoadImage("trees.png");
+        this.playField = new Rectangle(new Location(50, 50), new Location(564, 525));
         this.input = Main.getInputMngr();
         this.heroSprite = new SpriteAnimation(heroImg, 5);
         this.updateSprite = false;
         this.monsterHead = FileUtils.LoadImage("head.png");
         this.scoreFont = (new Font("Arial", 25));
+        this.monsters = new ArrayList<Monster>();
+        this.hearts = new ArrayList<HeartEntity>();
         
-        Location l = playField.getLocationRelative(0.5, 0.65);
-		l.setX(l.getX() + 50);
-		l.setY(l.getY() + 50);
+        Location l = playField.getLocationRelative(0.59, 0.59);
         
         this.hero = new Hero(l);
-        
-        this.center = l.clone();
-        
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
     }
     
@@ -61,20 +79,128 @@ public class GameLayer implements Layer {
     	} else {
     		this.updateSprite = false;
     	}
+    	
+    	if(this.hero.facingCache != this.hero.facing) {
+    		this.hero.facingCache = this.hero.facing;
+    		
+    		if(this.hero.facing == Direction.UP) {
+    			this.heroSprite.setImage(this.heroBack);
+    		} else if(this.hero.facing == Direction.DOWN) {
+    			this.heroSprite.setImage(this.heroImg);
+    		}
+    	}
+    	
+    	if(this.hero.getHealth() > 0 && frame % 50 == 0) {
+    		this.monsters.add(Monster.SpawnMonster(this.playField));
+    	}
+    	
+    	if(this.hero.getHealth() > 0 && frame % 90 == 0) {
+    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.hearts.add(new HeartPower(this.playField));
+    	}
+    	
+    	if(this.hero.getHealth() > 0 && frame % 120 == 0) {
+    		if(CoreUtils.randomIntInRange(0, 10) == 0) this.hearts.add(new HeartExtra(this.playField));
+    	}
+    	
+    	Location heroLoc = this.hero.getLocation();
+    	
+    	Iterator<Monster> i = monsters.iterator();
+    	
+    	while(i.hasNext()) {
+    		Monster m = i.next();
+    		if(m.getLocation().distance(heroLoc) < 30 && this.hero.dmgTick == 0) {
+    			this.hero.damage();
+    			m.kill();
+    			i.remove();
+    		} else {
+    			if(heroLoc.getY() < m.getLocation().getY()) {
+    				m.move(Direction.UP, 0.01);
+    			} else if(heroLoc.getY() > m.getLocation().getY()) {
+    				m.move(Direction.DOWN, 0.01);
+    			}
+    			if(heroLoc.getX() < m.getLocation().getX()) {
+    				m.move(Direction.LEFT, 0.01);
+    			} else if(heroLoc.getX() > m.getLocation().getX()) {
+    				m.move(Direction.RIGHT, 0.01);
+    			}
+    			m.handleMovement(delta, this.playField, false);
+    		}
+    	}
+    	
+    	Iterator<HeartEntity> i2 = hearts.iterator();
+    	
+    	while(i2.hasNext()) {
+    		HeartEntity h = i2.next();
+    		if(h.getLocation().distance(heroLoc) < 32) {
+    			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
+    				HeartPower heart1 = (HeartPower) h;
+    				if(h.getLocation().distance(heroLoc) < 15) {
+    					heart1.pickup(this.hero);
+    					i2.remove();
+    				}
+    			} else if(h instanceof HeartExtra) {
+    				HeartExtra heart2 = (HeartExtra) h;
+    				if(h.getLocation().distance(heroLoc) < 15) {
+    					heart2.pickup(this.hero);
+    					i2.remove();
+    				}
+    			}
+    		}
+    	}
+    	
+    	if(this.hero.damageTick > 0) {
+    		this.hero.damageTick -= 0.1;
+    	} else {
+    		this.hero.damageTick = 0;
+    	}
+    	
+    	if(this.hero.dmgTick > 0) {
+    		this.hero.dmgTick -= 0.1;
+    	} else {
+    		this.hero.dmgTick = 0;
+    	}
+    	
+    	score = monsters.size();
     }
 
 	@Override
 	public void render(GraphicsContext gfx) {
 		Image sprite = heroSprite.nextFrame(this.updateSprite);
-		sprite = FileUtils.colorizeImage(sprite);
+		sprite = FileUtils.colorizeImage(sprite, Color.RED, this.hero.damageTick);
+		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
-		gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (heroImg.getHeight() / 2), 30, 30);
-		gfx.drawImage(this.monsterHead, 38, 38, 128 / 3, 128 / 3);
+		
+		for(HeartEntity h : hearts) {
+			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
+				gfx.drawImage(this.heartFull, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
+			} else if(h instanceof HeartExtra) {
+				gfx.drawImage(this.heartExtra, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartExtra.getWidth() * 0.75, this.heartExtra.getHeight() * 0.75);
+			}
+		}
+		
+		for(Monster m : monsters) {
+			gfx.drawImage(this.monsterImg, m.getLocation().getX() - (monsterImg.getWidth() / 2), m.getLocation().getY() - (monsterImg.getHeight() / 2), 30, 30);
+		}
+		
+		gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 30, 30);
+		/* HUD */
+		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);
 		gfx.setFill(Color.YELLOW);
 		gfx.setFont(this.scoreFont);
-		gfx.fillText(String.valueOf(score), 88, 69);
+		gfx.fillText(String.valueOf(score), 83, 95);
 		gfx.setStroke(Color.YELLOW);
-		gfx.strokeText(String.valueOf(score), 88, 69);
+		gfx.strokeText(String.valueOf(score), 83, 95);
+		
+		for(int h = 0; h < this.hero.getHealth(); h++) {
+			gfx.drawImage(this.heartFull, 42 + ((this.heartSize + 2) * h), 45, this.heartSize, this.heartSize);
+		}
+		
+		for(int h = this.hero.getHealth(); h < this.hero.getMaxHealth(); h++) {
+			gfx.drawImage(this.heartEmpty, 42 + ((this.heartSize + 2) * h), 45, this.heartSize, this.heartSize);
+		}
+		
+		/* Final */
+		gfx.drawImage(trees, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
 	}
 
 	@Override
@@ -93,5 +219,13 @@ public class GameLayer implements Layer {
 	    	}
 		}
 		return false;
+	}
+	
+	public Image getHeroBack() {
+		return this.heroBack;
+	}
+	
+	public void score() {
+		this.score++;
 	}
 }

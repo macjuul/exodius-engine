@@ -21,11 +21,10 @@ public class Main extends ExodiusEngine {
 	public void init(Stage window, Runtime run) {
 	    FileUtils.setResourceDirectory("net/exodiusmc/example");
 	    setMainClass(this.getClass());
-	    this.input = getInputManager();
-	    
+	    Main.input = getInputManager();
 	    Main.main = this;
-	    
 	    Main.window = window;
+	    Main.engine = getEngine();
 	    
 	    window.setResizable(false);
 	    

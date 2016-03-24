@@ -11,6 +11,8 @@ public class Entity {
 	private double maxAcceleration = 5;
 	private double acceleration_X;
 	private double acceleration_Y;
+
+	public Direction facing;
 	
 	public Entity(Location pos) {
 		this.pos = pos;
@@ -31,30 +33,38 @@ public class Entity {
 		switch(d) {
 		case UP:
 			this.acceleration_Y = Math.max(acceleration_Y - movementSpeed, -this.maxAcceleration);
+			this.facing = Direction.UP;
 			break;
 		case RIGHT:
 			this.acceleration_X = Math.min(acceleration_X + movementSpeed, this.maxAcceleration);
+			// this.facing = Direction.RIGHT;
 			break;
 		case DOWN:
 			this.acceleration_Y = Math.min(acceleration_Y + movementSpeed, this.maxAcceleration);
+			this.facing = Direction.DOWN;
 			break;
 		case LEFT:
 			this.acceleration_X = Math.max(acceleration_X - movementSpeed, -this.maxAcceleration);
+			// this.facing = Direction.LEFT;
 			break;
 		}
 	}
 	
 	public void handleMovement(double dt, Rectangle field) {
+		handleMovement(dt, field, true);
+	}
+	
+	public void handleMovement(double dt, Rectangle field, boolean checkRect) {
 		saveLoc();
 		this.pos.setX(this.pos.getX() + this.acceleration_X);
-		if(!field.contains(this.pos)) {
+		if(!field.contains(this.pos) && checkRect) {
     		undoMovement();
     	}
     	this.acceleration_X *= 0.8;
 		
     	saveLoc();
 		this.pos.setY(this.pos.getY() + this.acceleration_Y);
-		if(!field.contains(this.pos)) {
+		if(!field.contains(this.pos) && checkRect) {
     		undoMovement();
     	}
     	this.acceleration_Y *= 0.8;

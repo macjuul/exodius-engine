@@ -149,6 +149,23 @@ public class Location {
 		return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 	}
 	
+	/*
+	 * Returns the angle in degrees between the current location and
+	 * the target location in degrees
+	 * 
+	 * @param Location otherLoc
+	 * @return double Degrees
+	 */
+	public float getAngle(Location otherLoc) {
+		float angle = (float) Math.toDegrees(Math.atan2(otherLoc.getY() - this.y, otherLoc.getX() - this.x)) + 90;
+
+	    if(angle < 0){
+	        angle += 360;
+	    }
+	
+	    return angle;
+	}
+	
 	public Location clone() {
 		return new Location(this.x, this.y);
 	}

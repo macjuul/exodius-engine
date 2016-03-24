@@ -36,6 +36,14 @@ public class SpriteAnimation {
 		}
 	}
 	
+	public void setImage(Image img) {
+		this.img = img;
+	}
+	
+	public Image getImage() {
+		return this.img;
+	}
+	
 	public void setSpriteOrder(int[] order) {
 		this.customFrameOrder = true;
 		this.frameOrder = order;
