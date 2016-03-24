@@ -1,9 +1,13 @@
 package net.exodiusmc.example;
 
-public class Monster {
+import javafx.scene.image.Image;
+import net.exodiusmc.engine.Location;
 
-    public Monster() {
-        // TODO Auto-generated constructor stub
-    }
+public class Monster extends Entity {
+	Image i;
+
+	public Monster(Location pos) {
+		super(pos);
+	}
 
 }

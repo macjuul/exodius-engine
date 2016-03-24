@@ -6,7 +6,8 @@ import net.exodiusmc.engine.layers.Layer;
 
 public class Runtime extends AnimationTimer {
 	private long lastTime = System.nanoTime();
-	private double ns = 1000000000 / 60;    
+	private double ticks = 60D;  
+	private double ns = 1000000000 / ticks;    
 	private double delta = 0;
 	private ExodiusEngine engine;
 	private GraphicsContext gfx;
@@ -22,7 +23,6 @@ public class Runtime extends AnimationTimer {
 	    delta += (now - lastTime) / ns;
 	    lastTime = now;
 	    if(delta >= 1){
-	        delta--;
 	        frame++;
 	        
 	        engine.update(delta);
@@ -36,6 +36,8 @@ public class Runtime extends AnimationTimer {
 	        	l.update(this.delta, this.frame);
 	        	l.render(this.gfx);
 	        }
+	        
+	        delta--;
 	    }
 	}
 	

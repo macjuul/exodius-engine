@@ -157,4 +157,13 @@ public class Location {
 	public String toString() {
 		return "{X=" + this.x + ", Y=" + this.y + "}";
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if(o instanceof Location) {
+			Location loc = (Location) o;
+			return this.x == loc.getX() && this.y == loc.getY();
+		}
+		return false;
+	}
 }

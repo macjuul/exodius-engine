@@ -9,11 +9,15 @@ public class Rectangle {
 	private double width;
 	private double height;
 	
+	private void updateSizing() {
+		this.width = max.getX() - min.getX();
+		this.height = max.getY() - min.getY();
+	}
+	
 	public Rectangle(Location min, Location max) {
 		this.min = min;
 		this.max = max;
-		this.width = max.getX() - min.getX();
-		this.height = max.getY() - min.getY();
+		updateSizing();
 	}
 	
 	public double getWidth() {
@@ -56,6 +60,7 @@ public class Rectangle {
 		this.min.setY(this.min.getY() - a);
 		this.max.setX(this.max.getX() + a);
 		this.max.setY(this.max.getY() + a);
+		updateSizing();
 	}
 	
 	public void shrink(double a) {
@@ -63,6 +68,7 @@ public class Rectangle {
 		this.min.setY(this.min.getY() + a);
 		this.max.setX(this.max.getX() - a);
 		this.max.setY(this.max.getY() - a);
+		updateSizing();
 	}
 	
 	public void rotate() {
@@ -70,6 +76,7 @@ public class Rectangle {
 		double width = this.width;
 		this.max.setX(this.min.getX() + height);
 		this.max.setY(this.min.getY() + width);
+		updateSizing();
 	}
 	
 	public void drawFill(GraphicsContext gfx) {
@@ -80,7 +87,14 @@ public class Rectangle {
 		gfx.fillRoundRect(this.min.getX(), this.min.getY(), this.width, this.height, curve, curve);
 	}
 	
-	public void strokeFill(GraphicsContext gfx) {
+	public void drawStroke(GraphicsContext gfx) {
 		gfx.strokeRect(this.min.getX(), this.min.getY(), this.width, this.height);
+	}
+	
+	public Location getLocationRelative(double xp, double yp) {
+		if(xp < 0 || xp > 1 || yp < 0 || xp > 1) {
+			throw new IllegalArgumentException("the given arguments must be beteen 0.0 and 1.0");
+		}
+		return new Location(this.width * xp, this.height * yp);
 	}
 }

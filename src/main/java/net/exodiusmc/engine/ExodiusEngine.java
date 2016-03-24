@@ -19,6 +19,7 @@ public abstract class ExodiusEngine extends Application {
 	private Stage window;
 	private LayerManager layerManager;
 	private InputManager inputManager;
+	private Class<?> m;
 
 	public abstract void init(Stage window, Runtime run);
 	
@@ -28,6 +29,7 @@ public abstract class ExodiusEngine extends Application {
 	public void start(Stage stage) throws Exception {
 		this.window = stage;
 		this.layerManager = new LayerManager();
+		this.inputManager = new InputManager(stage);
 		
 		StackPane p = new StackPane();
 		Canvas cvs = new Canvas(this.width, this.height);
@@ -63,12 +65,24 @@ public abstract class ExodiusEngine extends Application {
 		if(window.isResizable()) {
 		    p.setPadding(new Insets(43, 0, 0, 16));
 		} else {
-		    p.setPadding(new Insets(33, 0, 0, 6));
+		    p.setPadding(new Insets(29, 0, 0, 6));
 		}
 		
 		window.show();
 	}
 	
+	public ExodiusEngine getEngine() {
+		return this;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
 	public GraphicsContext getGraphics() {
 		return this.gfx;
 	}
@@ -83,5 +97,13 @@ public abstract class ExodiusEngine extends Application {
 	
 	public InputManager getInputManager() {
 		return this.inputManager;
+	}
+	
+	protected void setMainClass(Class<?> s) {
+		this.m = s;
+	}
+	
+	public Class<?> mainClass() {
+		return this.m;
 	}
 }
