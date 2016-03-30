@@ -97,15 +97,15 @@ public class GameLayer implements Layer {
 	    		}
 	    	}
 	    	
-	    	if(this.hero.getHealth() > 0 && frame % 50 == 0) {
+	    	if(frame % 50 == 0) {
 	    		this.monsters.add(Monster.SpawnMonster(this.playField));
 	    	}
 	    	
-	    	if(this.hero.getHealth() > 0 && frame % 90 == 0) {
+	    	if(frame % 90 == 0) {
 	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.hearts.add(new HeartPower(this.playField));
 	    	}
 	    	
-	    	if(this.hero.getHealth() > 0 && frame % 120 == 0) {
+	    	if(frame % 120 == 0) {
 	    		if(CoreUtils.randomIntInRange(0, 10) == 0) this.hearts.add(new HeartExtra(this.playField));
 	    	}
 	    	
