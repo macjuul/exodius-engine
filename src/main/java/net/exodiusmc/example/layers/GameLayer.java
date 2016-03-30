@@ -106,7 +106,7 @@ public class GameLayer implements Layer {
 	    	}
 	    	
 	    	if(frame % 120 == 0) {
-	    		if(CoreUtils.randomIntInRange(0, 10) == 0) this.hearts.add(new HeartExtra(this.playField));
+	    		if(CoreUtils.randomIntInRange(0, 15) == 0) this.hearts.add(new HeartExtra(this.playField));
 	    	}
 	    	
 	    	Location heroLoc = this.hero.getLocation();
