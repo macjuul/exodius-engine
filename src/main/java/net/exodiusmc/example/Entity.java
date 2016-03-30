@@ -40,7 +40,7 @@ public class Entity {
 			break;
 		case RIGHT:
 			this.acceleration_X = Math.min(acceleration_X + movementSpeed, this.maxAcceleration);
-			// this.facing = Direction.RIGHT;
+			this.facing = Direction.RIGHT;
 			break;
 		case DOWN:
 			this.acceleration_Y = Math.min(acceleration_Y + movementSpeed, this.maxAcceleration);
@@ -48,7 +48,7 @@ public class Entity {
 			break;
 		case LEFT:
 			this.acceleration_X = Math.max(acceleration_X - movementSpeed, -this.maxAcceleration);
-			// this.facing = Direction.LEFT;
+			this.facing = Direction.LEFT;
 			break;
 		case CUSTOM:
 			double toPlayerX = pos.getX() - l.getX();

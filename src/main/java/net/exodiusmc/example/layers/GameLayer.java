@@ -27,6 +27,7 @@ public class GameLayer implements Layer {
 	private Image groundImg;
     private Image heroImg;
     private Image heroBack;
+    private Image heroRight;
     private Image monsterHead;
     private Image monsterImg;
     private Image heartFull;
@@ -43,13 +44,16 @@ public class GameLayer implements Layer {
     private int heartSize = 20;
     private float fade;
     
+    private boolean horHero = false;
+    
     public ArrayList<Monster> monsters;
     public ArrayList<HeartEntity> hearts;
     
     public GameLayer() {
     	this.groundImg = FileUtils.LoadImage("ground.png");
     	this.heroBack = FileUtils.LoadImage("hero_anim_back.png");
-        this.heroImg = FileUtils.LoadImage("hero_anim.png");
+    	this.heroImg = FileUtils.LoadImage("hero_anim.png");
+        this.heroRight = FileUtils.LoadImage("hero_right.png");
         this.monsterImg = FileUtils.LoadImage("monster.png");
         this.heartEmpty = FileUtils.LoadImage("heart_empty.png");
         this.heartFull = FileUtils.LoadImage("heart_full.png");
@@ -88,13 +92,25 @@ public class GameLayer implements Layer {
 	    	}
 	    	
 	    	if(this.hero.facingCache != this.hero.facing) {
-	    		this.hero.facingCache = this.hero.facing;
 	    		
 	    		if(this.hero.facing == Direction.UP) {
-	    			this.heroSprite.setImage(this.heroBack);
-	    		} else if(this.hero.facing == Direction.DOWN) {
-	    			this.heroSprite.setImage(this.heroImg);
+    				this.heroSprite = new SpriteAnimation(this.heroBack, 5);
+    			} else if(this.hero.facing == Direction.DOWN) {
+    				this.heroSprite = new SpriteAnimation(this.heroImg, 5);
+    			}
+	    		
+	    		if((this.hero.facing == Direction.UP || this.hero.facing == Direction.DOWN) && (this.hero.facingCache == Direction.LEFT || this.hero.facingCache == Direction.RIGHT)) {
+	    			this.horHero = false;
+	    			
+	    			this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
+	    		} else if((this.hero.facing == Direction.LEFT || this.hero.facing == Direction.RIGHT) && (this.hero.facingCache == Direction.UP || this.hero.facingCache == Direction.DOWN)) {
+	    			this.horHero = true;
+	    			
+	    			this.heroSprite = new SpriteAnimation(this.heroRight, 3);
+	    			this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 1});
 	    		}
+	    		
+	    		this.hero.facingCache = this.hero.facing;
 	    	}
 	    	
 	    	if(frame % 50 == 0) {
@@ -177,7 +193,15 @@ public class GameLayer implements Layer {
 			gfx.drawImage(this.monsterImg, m.getLocation().getX() - (monsterImg.getWidth() / 2), m.getLocation().getY() - (monsterImg.getHeight() / 2), 30, 30);
 		}
 		
-		gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 30, 30);
+		if(this.horHero) {
+			if(this.hero.facing == Direction.RIGHT) {
+				gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 20, 31);
+			} else {
+				gfx.drawImage(sprite, this.hero.getLocation().getX() + 20 - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), -20, 31);
+			}
+		} else {
+			gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 30, 30);
+		}
 		/* HUD */
 		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);
 		gfx.setFill(Color.YELLOW);
