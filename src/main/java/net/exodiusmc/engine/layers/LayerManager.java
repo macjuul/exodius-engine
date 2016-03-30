@@ -46,4 +46,11 @@ public class LayerManager {
 		this.layerStack.remove(this.layerStack.size() - 1);
 		return popped;
 	}
+	
+	/*
+	 * Clear the layer stack
+	 */
+	public void clear() {
+		this.layerStack.clear();
+	}
 }

@@ -3,6 +3,7 @@ package net.exodiusmc.example;
 import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
+import net.exodiusmc.example.layers.DeathLayer;
 
 public class Hero extends Entity {
 	private int maxHealth = 10;
@@ -39,7 +40,7 @@ public class Hero extends Entity {
 	}
 	
 	public void death() {
-		
+		Main.engine.getLayerManager().add(new DeathLayer());
 	}
 
 	public int getHealth() {

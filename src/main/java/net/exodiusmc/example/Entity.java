@@ -28,8 +28,11 @@ public class Entity {
 		this.prevPos = this.pos.clone();
 		this.pos = pos;
 	}
-	
 	public void move(Direction d, double dt) {
+		move(d, dt, null);
+	}
+	
+	public void move(Direction d, double dt, Location l) {
 		switch(d) {
 		case UP:
 			this.acceleration_Y = Math.max(acceleration_Y - movementSpeed, -this.maxAcceleration);
@@ -47,6 +50,28 @@ public class Entity {
 			this.acceleration_X = Math.max(acceleration_X - movementSpeed, -this.maxAcceleration);
 			// this.facing = Direction.LEFT;
 			break;
+		case CUSTOM:
+			double toPlayerX = pos.getX() - l.getX();
+			double toPlayerY = pos.getY() - l.getY();
+			
+			double toPlayerLength = Math.sqrt(toPlayerX * toPlayerX + toPlayerY * toPlayerY);
+			toPlayerX = toPlayerX / toPlayerLength;
+			toPlayerY = toPlayerY / toPlayerLength;
+			
+			acceleration_X -= toPlayerX * dt;
+			acceleration_Y -= toPlayerY * dt;
+			
+			if(this.acceleration_X > this.maxAcceleration) {
+				this.acceleration_X = this.maxAcceleration;
+			} else if(this.acceleration_X < -this.maxAcceleration) {
+				this.acceleration_X = -this.maxAcceleration;
+			}
+			
+			if(this.acceleration_Y > this.maxAcceleration) {
+				this.acceleration_Y = this.maxAcceleration;
+			} else if(this.acceleration_Y < -this.maxAcceleration) {
+				this.acceleration_Y = -this.maxAcceleration;
+			}
 		}
 	}
 	

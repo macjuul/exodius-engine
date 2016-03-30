@@ -30,10 +30,9 @@ public class Runtime extends AnimationTimer {
 	        
 	        for(int c = 0; c < stackSize; c++) {
 	        	Layer l = this.engine.getLayerManager().get(c);
-	        	if(stackSize - 1 != c && !l.renderOnCover()) {
-	        		continue;
+	        	if((stackSize - 1 != c && l.updateOnCover()) || stackSize -1 == c) {
+	        		l.update(this.delta, this.frame);
 	        	}
-	        	l.update(this.delta, this.frame);
 	        	l.render(this.gfx);
 	        }
 	        

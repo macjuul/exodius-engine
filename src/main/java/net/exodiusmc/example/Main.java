@@ -6,6 +6,7 @@ import net.exodiusmc.engine.ExodiusEngine;
 import net.exodiusmc.engine.InputManager;
 import net.exodiusmc.engine.Runtime;
 import net.exodiusmc.engine.util.FileUtils;
+import net.exodiusmc.example.layers.GameLayer;
 
 public class Main extends ExodiusEngine {
     public static Stage window;
@@ -19,7 +20,7 @@ public class Main extends ExodiusEngine {
 
 	@Override
 	public void init(Stage window, Runtime run) {
-	    FileUtils.setResourceDirectory("net/exodiusmc/example");
+	    FileUtils.setResourceDirectory("net/exodiusmc/example/");
 	    setMainClass(this.getClass());
 	    Main.input = getInputManager();
 	    Main.main = this;
@@ -42,9 +43,7 @@ public class Main extends ExodiusEngine {
 	}
 
 	@Override
-	public void update(double delta) {
-	    
-	}
+	public void update(double delta) {}
 	
 	public Canvas getCanvas() {
 		return this.getGraphics().getCanvas();
