@@ -17,11 +17,11 @@ import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
-import net.exodiusmc.example.entity.Heart;
-import net.exodiusmc.example.entity.HeartExtra;
-import net.exodiusmc.example.entity.HeartPower;
-import net.exodiusmc.example.entity.Hero;
-import net.exodiusmc.example.entity.Monster;
+import net.exodiusmc.example.entity.living.Hero;
+import net.exodiusmc.example.entity.living.Monster;
+import net.exodiusmc.example.entity.powerup.Heart;
+import net.exodiusmc.example.entity.powerup.HeartExtra;
+import net.exodiusmc.example.entity.powerup.HeartPower;
 
 public class GameLayer implements Layer {
 	private Image groundImg;

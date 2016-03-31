@@ -4,7 +4,7 @@ import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.engine.shape.Rectangle;
 
-public class Entity {
+public abstract class Entity {
 	private Location pos;
 	private Location prevPos;
 	private double movementSpeed = 1;

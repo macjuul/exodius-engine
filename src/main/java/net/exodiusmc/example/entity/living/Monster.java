@@ -1,9 +1,10 @@
-package net.exodiusmc.example.entity;
+package net.exodiusmc.example.entity.living;
 
 import javafx.scene.image.Image;
 import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.example.entity.Entity;
 
 public class Monster extends Entity {
 	Image i;
