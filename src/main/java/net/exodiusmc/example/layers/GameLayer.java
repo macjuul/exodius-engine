@@ -228,4 +228,10 @@ public class GameLayer implements Layer {
 	public void score() {
 		this.score++;
 	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
 }

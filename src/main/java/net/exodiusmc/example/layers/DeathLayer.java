@@ -17,6 +17,9 @@ public class DeathLayer implements Layer {
 	
 	private byte paneType;
 	
+	private EventHandler<MouseEvent> mouseMoveEvent;
+	private EventHandler<MouseEvent> mouseClickEvent;
+	
 	public DeathLayer() {
 		/*
 		 * 159.0 319.0
@@ -31,7 +34,7 @@ public class DeathLayer implements Layer {
 		
 		this.paneType = 0;
 		
-		Main.window.addEventHandler(MouseEvent.MOUSE_MOVED, new EventHandler<MouseEvent>() {
+		this.mouseMoveEvent = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent evt) {
 				double x = evt.getSceneX();
@@ -39,15 +42,15 @@ public class DeathLayer implements Layer {
 				
 				if((159 < x && 319 < y) && (x < 240 && y < 357)) {
 					paneType = 1;
-				} else if((255 < x && 319 < y) && (x < 393 && y < 357)) {
+				} else if((255 < x && 319 < y) && (x < 293 && y < 357)) {
 					paneType = 2;
 				} else {
 					paneType = 0;
 				}
 			}
-        });
+        };
 		
-		Main.window.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+		this.mouseClickEvent = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent evt) {
 				double x = evt.getSceneX();
@@ -57,12 +60,15 @@ public class DeathLayer implements Layer {
 					// Retry
 					Main.engine.getLayerManager().clear();
 					Main.engine.getLayerManager().add(new GameLayer());
-				} else if((255 < x && 319 < y) && (x < 393 && y < 357)) {
+				} else if((255 < x && 319 < y) && (x < 293 && y < 357)) {
 					// Quit
 					System.exit(0);
 				}
 			}
-        });
+		};
+		
+		Main.window.addEventFilter(MouseEvent.MOUSE_MOVED, this.mouseMoveEvent);
+		Main.window.addEventFilter(MouseEvent.MOUSE_PRESSED, this.mouseClickEvent);
 	}
 
 	@Override
@@ -97,6 +103,12 @@ public class DeathLayer implements Layer {
 		}
 		
 		gfx.setGlobalAlpha(1);
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

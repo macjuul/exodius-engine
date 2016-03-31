@@ -43,6 +43,7 @@ public class LayerManager {
 	 */
 	public Layer pop() {
 		Layer popped = this.layerStack.get(this.layerStack.size() - 1);
+		popped.dispose();
 		this.layerStack.remove(this.layerStack.size() - 1);
 		return popped;
 	}
@@ -51,6 +52,9 @@ public class LayerManager {
 	 * Clear the layer stack
 	 */
 	public void clear() {
+		for(Layer l : layerStack) {
+			l.dispose();
+		}
 		this.layerStack.clear();
 	}
 }

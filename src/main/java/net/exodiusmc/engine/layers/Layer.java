@@ -8,4 +8,6 @@ public interface Layer {
 	public void update(double delta, long frame);
 	
 	public void render(GraphicsContext gfx);
+	
+	public void dispose();
 }
