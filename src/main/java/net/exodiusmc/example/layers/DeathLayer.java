@@ -67,8 +67,8 @@ public class DeathLayer implements Layer {
 			}
 		};
 		
-		Main.window.addEventFilter(MouseEvent.MOUSE_MOVED, this.mouseMoveEvent);
-		Main.window.addEventFilter(MouseEvent.MOUSE_PRESSED, this.mouseClickEvent);
+		Main.window.addEventHandler(MouseEvent.MOUSE_MOVED, this.mouseMoveEvent);
+		Main.window.addEventHandler(MouseEvent.MOUSE_PRESSED, this.mouseClickEvent);
 	}
 
 	@Override
@@ -107,8 +107,9 @@ public class DeathLayer implements Layer {
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		Main.window.removeEventHandler(MouseEvent.MOUSE_MOVED, this.mouseMoveEvent);
+		Main.window.removeEventHandler(MouseEvent.MOUSE_PRESSED, this.mouseClickEvent);
 		
+		Main.window.getScene().setCursor(Cursor.DEFAULT);
 	}
-
 }
