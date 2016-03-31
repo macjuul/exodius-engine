@@ -26,8 +26,6 @@ import net.exodiusmc.example.Monster;
 public class GameLayer implements Layer {
 	private Image groundImg;
     private Image heroImg;
-    private Image heroBack;
-    private Image heroRight;
     private Image monsterHead;
     private Image monsterImg;
     private Image heartFull;
@@ -51,9 +49,7 @@ public class GameLayer implements Layer {
     
     public GameLayer() {
     	this.groundImg = FileUtils.LoadImage("ground.png");
-    	this.heroBack = FileUtils.LoadImage("hero_anim_back.png");
     	this.heroImg = FileUtils.LoadImage("hero_anim.png");
-        this.heroRight = FileUtils.LoadImage("hero_right.png");
         this.monsterImg = FileUtils.LoadImage("monster.png");
         this.heartEmpty = FileUtils.LoadImage("heart_empty.png");
         this.heartFull = FileUtils.LoadImage("heart_full.png");
@@ -92,24 +88,6 @@ public class GameLayer implements Layer {
 	    	}
 	    	
 	    	if(this.hero.facingCache != this.hero.facing) {
-	    		
-	    		if(this.hero.facing == Direction.UP) {
-    				this.heroSprite = new SpriteAnimation(this.heroBack, 5);
-    			} else if(this.hero.facing == Direction.DOWN) {
-    				this.heroSprite = new SpriteAnimation(this.heroImg, 5);
-    			}
-	    		
-	    		if((this.hero.facing == Direction.UP || this.hero.facing == Direction.DOWN) && (this.hero.facingCache == Direction.LEFT || this.hero.facingCache == Direction.RIGHT)) {
-	    			this.horHero = false;
-	    			
-	    			this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
-	    		} else if((this.hero.facing == Direction.LEFT || this.hero.facing == Direction.RIGHT) && (this.hero.facingCache == Direction.UP || this.hero.facingCache == Direction.DOWN)) {
-	    			this.horHero = true;
-	    			
-	    			this.heroSprite = new SpriteAnimation(this.heroRight, 3);
-	    			this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 1});
-	    		}
-	    		
 	    		this.hero.facingCache = this.hero.facing;
 	    	}
 	    	
@@ -245,10 +223,6 @@ public class GameLayer implements Layer {
 	    	}
 		}
 		return false;
-	}
-	
-	public Image getHeroBack() {
-		return this.heroBack;
 	}
 	
 	public void score() {
