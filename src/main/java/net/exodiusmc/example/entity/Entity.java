@@ -1,4 +1,4 @@
-package net.exodiusmc.example;
+package net.exodiusmc.example.entity;
 
 import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.enums.Direction;

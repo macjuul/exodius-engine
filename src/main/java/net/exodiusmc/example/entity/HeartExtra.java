@@ -1,8 +1,8 @@
-package net.exodiusmc.example;
+package net.exodiusmc.example.entity;
 
 import net.exodiusmc.engine.shape.Rectangle;
 
-public class HeartExtra extends HeartEntity {
+public class HeartExtra extends Heart {
 
 	public HeartExtra(Rectangle playField) {
 		super(playField);

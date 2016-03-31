@@ -1,4 +1,4 @@
-package net.exodiusmc.example;
+package net.exodiusmc.example.entity;
 
 import javafx.scene.image.Image;
 import net.exodiusmc.engine.Location;

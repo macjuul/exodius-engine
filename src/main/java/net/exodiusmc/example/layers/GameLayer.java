@@ -16,12 +16,12 @@ import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
-import net.exodiusmc.example.HeartEntity;
-import net.exodiusmc.example.HeartExtra;
-import net.exodiusmc.example.HeartPower;
-import net.exodiusmc.example.Hero;
 import net.exodiusmc.example.Main;
-import net.exodiusmc.example.Monster;
+import net.exodiusmc.example.entity.Heart;
+import net.exodiusmc.example.entity.HeartExtra;
+import net.exodiusmc.example.entity.HeartPower;
+import net.exodiusmc.example.entity.Hero;
+import net.exodiusmc.example.entity.Monster;
 
 public class GameLayer implements Layer {
 	private Image groundImg;
@@ -45,7 +45,7 @@ public class GameLayer implements Layer {
     private boolean horHero = false;
     
     public ArrayList<Monster> monsters;
-    public ArrayList<HeartEntity> hearts;
+    public ArrayList<Heart> hearts;
     
     public GameLayer() {
     	this.groundImg = FileUtils.LoadImage("ground.png");
@@ -62,7 +62,7 @@ public class GameLayer implements Layer {
         this.monsterHead = FileUtils.LoadImage("head.png");
         this.scoreFont = (new Font("Arial", 25));
         this.monsters = new ArrayList<Monster>();
-        this.hearts = new ArrayList<HeartEntity>();
+        this.hearts = new ArrayList<Heart>();
         this.fade = 0;
         
         Location l = playField.getLocationRelative(0.59, 0.59);
@@ -119,10 +119,10 @@ public class GameLayer implements Layer {
 	    		}
 	    	}
 	    	
-	    	Iterator<HeartEntity> i2 = hearts.iterator();
+	    	Iterator<Heart> i2 = hearts.iterator();
 	    	
 	    	while(i2.hasNext()) {
-	    		HeartEntity h = i2.next();
+	    		Heart h = i2.next();
 	    		if(h.getLocation().distance(heroLoc) < 30) {
 	    			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
 	    				HeartPower heart1 = (HeartPower) h;
@@ -159,7 +159,7 @@ public class GameLayer implements Layer {
 		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
 		
-		for(HeartEntity h : hearts) {
+		for(Heart h : hearts) {
 			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
 				gfx.drawImage(this.heartFull, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
 			} else if(h instanceof HeartExtra) {
