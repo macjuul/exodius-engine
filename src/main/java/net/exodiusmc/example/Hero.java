@@ -17,6 +17,9 @@ public class Hero extends Entity {
 	public Hero(Location pos) {
 		super(pos);
 		
+		this.facing = Direction.DOWN;
+		this.facingCache = Direction.DOWN;
+		
 		setMovementSpeed(0.6);
 	}
 	
