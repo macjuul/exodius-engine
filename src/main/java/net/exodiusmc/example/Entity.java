@@ -58,8 +58,8 @@ public class Entity {
 			toPlayerX = toPlayerX / toPlayerLength;
 			toPlayerY = toPlayerY / toPlayerLength;
 			
-			acceleration_X -= toPlayerX * dt;
-			acceleration_Y -= toPlayerY * dt;
+			acceleration_X -= toPlayerX * dt * movementSpeed;
+			acceleration_Y -= toPlayerY * dt * movementSpeed;
 			
 			if(this.acceleration_X > this.maxAcceleration) {
 				this.acceleration_X = this.maxAcceleration;

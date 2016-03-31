@@ -10,7 +10,7 @@ public class Monster extends Entity {
 
 	public Monster(Location pos) {
 		super(pos);
-		setMovementSpeed(CoreUtils.randomDoubleInRange(0.15, 0.3));
+		setMovementSpeed(CoreUtils.randomDoubleInRange(0.5, 0.85));
 	}
 	
 	public static Monster SpawnMonster(Rectangle playField) {
