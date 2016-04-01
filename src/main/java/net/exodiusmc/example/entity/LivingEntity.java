@@ -11,8 +11,8 @@ public abstract class LivingEntity extends Entity {
 	private double acceleration_X = 0;
 	private double acceleration_Y = 0;
 
-	public LivingEntity(Location pos) {
-		super(pos);
+	public LivingEntity(Location pos, EntityType type) {
+		super(pos, type);
 	}
 
 	public int getHealth() {

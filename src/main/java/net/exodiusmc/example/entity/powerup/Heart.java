@@ -1,22 +1,19 @@
 package net.exodiusmc.example.entity.powerup;
 
-import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.example.entity.EntityType;
+import net.exodiusmc.example.entity.StaticEntity;
+import net.exodiusmc.example.entity.living.Hero;
 
-public class Heart {
-	private Location pos;
-	
-	public Heart(Rectangle playField) {
-		Location loc = playField.getLocationRelative(CoreUtils.randomDoubleInRange(0, 1), CoreUtils.randomDoubleInRange(0, 1));
-		
-		loc.setX(loc.getX() + 50);
-		loc.setY(loc.getY() + 50);
-		
-		this.pos = loc;
+public abstract class Heart extends StaticEntity {
+
+	public Heart(Rectangle playField, EntityType type) {
+		super(playField.getLocationRelative(CoreUtils.randomDoubleInRange(0, 1), CoreUtils.randomDoubleInRange(0, 1)), type);
 	}
 
-	public Location getLocation() {
-		return pos;
+	@Override
+	public void pickup(Hero h) {
+		
 	}
 }

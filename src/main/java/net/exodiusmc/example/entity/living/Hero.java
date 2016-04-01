@@ -4,6 +4,7 @@ import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.example.Main;
+import net.exodiusmc.example.entity.EntityType;
 import net.exodiusmc.example.entity.LivingEntity;
 import net.exodiusmc.example.layers.DeathLayer;
 
@@ -16,7 +17,7 @@ public class Hero extends LivingEntity {
 	public double dmgTick = 0;
 	
 	public Hero(Location pos) {
-		super(pos);
+		super(pos, EntityType.HERO);
 		
 		this.facing = Direction.DOWN;
 		this.facingCache = Direction.DOWN;

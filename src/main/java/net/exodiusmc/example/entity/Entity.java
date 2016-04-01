@@ -5,9 +5,11 @@ import net.exodiusmc.engine.Location;
 public abstract class Entity {
 	private Location pos;
 	private Location prevPos;
+	private EntityType type;
 	
-	public Entity(Location pos) {
+	public Entity(Location pos, EntityType type) {
 		this.pos = pos;
+		this.type = type;
 	}
 	
 	public Location getLocation() {
@@ -25,5 +27,9 @@ public abstract class Entity {
 	
 	public void restoreLocation() {
 		this.pos = this.prevPos.clone();
+	}
+	
+	public EntityType getEntityType() {
+		return this.type;
 	}
 }

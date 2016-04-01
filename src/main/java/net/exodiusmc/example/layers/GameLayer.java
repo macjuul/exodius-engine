@@ -17,9 +17,9 @@ import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
+import net.exodiusmc.example.entity.Entity;
 import net.exodiusmc.example.entity.living.Hero;
 import net.exodiusmc.example.entity.living.Monster;
-import net.exodiusmc.example.entity.powerup.Heart;
 import net.exodiusmc.example.entity.powerup.HeartExtra;
 import net.exodiusmc.example.entity.powerup.HeartPower;
 
@@ -42,10 +42,7 @@ public class GameLayer implements Layer {
     private int heartSize = 20;
     private float fade;
     
-    private boolean horHero = false;
-    
-    public ArrayList<Monster> monsters;
-    public ArrayList<Heart> hearts;
+    public ArrayList<Entity> entities;
     
     public GameLayer() {
     	this.groundImg = FileUtils.LoadImage("ground.png");
@@ -61,8 +58,7 @@ public class GameLayer implements Layer {
         this.updateSprite = false;
         this.monsterHead = FileUtils.LoadImage("head.png");
         this.scoreFont = (new Font("Arial", 25));
-        this.monsters = new ArrayList<Monster>();
-        this.hearts = new ArrayList<Heart>();
+        this.entities = new ArrayList<Entity>();
         this.fade = 0;
         
         Location l = playField.getLocationRelative(0.59, 0.59);
@@ -79,9 +75,7 @@ public class GameLayer implements Layer {
 	    	boolean r3 = handleMovement(new KeyCode[]{KeyCode.DOWN, KeyCode.S}, Direction.DOWN, delta);
 	    	boolean r4 = handleMovement(new KeyCode[]{KeyCode.LEFT, KeyCode.A}, Direction.LEFT, delta);
 	    	
-	    	this.hero.handleMovement(delta, this.playField);
-	    	
-	    	if(frame % 7 == 0 && (r1 || r2 || r3 || r4)) {
+	    	if(frame % 5 == 0 && (r1 || r2 || r3 || r4)) {
 	    		this.updateSprite = true;
 	    	} else {
 	    		this.updateSprite = false;
@@ -92,49 +86,65 @@ public class GameLayer implements Layer {
 	    	}
 	    	
 	    	if(frame % 50 == 0) {
-	    		this.monsters.add(Monster.SpawnMonster(this.playField));
+	    		this.entities.add(new Monster(this.playField));
 	    	}
 	    	
 	    	if(frame % 90 == 0) {
-	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.hearts.add(new HeartPower(this.playField));
+	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.entities.add(new HeartPower(this.playField));
 	    	}
 	    	
 	    	if(frame % 120 == 0) {
-	    		if(CoreUtils.randomIntInRange(0, 15) == 0) this.hearts.add(new HeartExtra(this.playField));
+	    		if(CoreUtils.randomIntInRange(0, 15) == 0) this.entities.add(new HeartExtra(this.playField));
 	    	}
 	    	
 	    	Location heroLoc = this.hero.getLocation();
 	    	
-	    	Iterator<Monster> i = monsters.iterator();
+	    	Iterator<Entity> i = this.entities.iterator();
 	    	
 	    	while(i.hasNext()) {
-	    		Monster m = i.next();
-	    		if(m.getLocation().distance(heroLoc) < 30 && this.hero.dmgTick == 0) {
-	    			this.hero.damage();
-	    			m.kill();
-	    			i.remove();
-	    		} else {
-	    			m.move(Direction.CUSTOM, 0.4, this.hero.getLocation());
-	    			m.handleMovement(delta, this.playField, false);
+	    		Entity m = i.next();
+//	    		if(m.getLocation().distance(heroLoc) < 30 && this.hero.dmgTick == 0) {
+//	    			this.hero.damage();
+//	    			m.kill();
+//	    			i.remove();
+//	    		} else {
+//	    			m.move(Direction.CUSTOM, 0.4, this.hero.getLocation());
+//	    			m.handleMovement(delta, this.playField, false);
+//	    		}
+	    		switch(m.getEntityType()) {
+				case EXTRA_HEART:
+					break;
+				case HERO:
+					break;
+				case MONSTER:
+					break;
+				case MUMMY:
+					break;
+				case POWER_HEART:
+					break;
+				case SKELETON:
+					break;
+				default:
+					break;
 	    		}
 	    	}
 	    	
-	    	Iterator<Heart> i2 = hearts.iterator();
-	    	
-	    	while(i2.hasNext()) {
-	    		Heart h = i2.next();
-	    		if(h.getLocation().distance(heroLoc) < 30) {
-	    			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
-	    				HeartPower heart1 = (HeartPower) h;
-	    				heart1.pickup(this.hero);
-						i2.remove();
-	    			} else if(h instanceof HeartExtra) {
-	    				HeartExtra heart2 = (HeartExtra) h;
-						heart2.pickup(this.hero);
-						i2.remove();
-	    			}
-	    		}
-	    	}
+//	    	Iterator<Heart> i2 = hearts.iterator();
+//	    	
+//	    	while(i2.hasNext()) {
+//	    		Heart h = i2.next();
+//	    		if(h.getLocation().distance(heroLoc) < 30) {
+//	    			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
+//	    				HeartPower heart1 = (HeartPower) h;
+//	    				heart1.pickup(this.hero);
+//						i2.remove();
+//	    			} else if(h instanceof HeartExtra) {
+//	    				HeartExtra heart2 = (HeartExtra) h;
+//						heart2.pickup(this.hero);
+//						i2.remove();
+//	    			}
+//	    		}
+//	    	}
 	    	
 	    	if(this.hero.damageTick > 0) {
 	    		this.hero.damageTick -= 0.1;
@@ -159,27 +169,39 @@ public class GameLayer implements Layer {
 		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
 		
-		for(Heart h : hearts) {
-			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
-				gfx.drawImage(this.heartFull, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
-			} else if(h instanceof HeartExtra) {
-				gfx.drawImage(this.heartExtra, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartExtra.getWidth() * 0.75, this.heartExtra.getHeight() * 0.75);
+//		for(Heart h : hearts) {
+//			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
+//				gfx.drawImage(this.heartFull, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
+//			} else if(h instanceof HeartExtra) {
+//				gfx.drawImage(this.heartExtra, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartExtra.getWidth() * 0.75, this.heartExtra.getHeight() * 0.75);
+//			}
+//		}
+//		
+//		for(Monster m : monsters) {
+//			gfx.drawImage(this.monsterImg, m.getLocation().getX() - (monsterImg.getWidth() / 2), m.getLocation().getY() - (monsterImg.getHeight() / 2), 30, 30);
+//		}
+		
+		for(Entity e : this.entities) {
+			switch(e.getEntityType()) {
+			case EXTRA_HEART:
+				break;
+			case HERO:
+				break;
+			case MONSTER:
+				break;
+			case MUMMY:
+				break;
+			case POWER_HEART:
+				break;
+			case SKELETON:
+				break;
+			default:
+				break;
 			}
 		}
 		
-		for(Monster m : monsters) {
-			gfx.drawImage(this.monsterImg, m.getLocation().getX() - (monsterImg.getWidth() / 2), m.getLocation().getY() - (monsterImg.getHeight() / 2), 30, 30);
-		}
-		
-		if(this.horHero) {
-			if(this.hero.facing == Direction.RIGHT) {
-				gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 20, 31);
-			} else {
-				gfx.drawImage(sprite, this.hero.getLocation().getX() + 20 - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), -20, 31);
-			}
-		} else {
-			gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 30, 30);
-		}
+		gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 30, 30);
+
 		/* HUD */
 		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);
 		gfx.setFill(Color.YELLOW);
@@ -215,10 +237,10 @@ public class GameLayer implements Layer {
 	private boolean handleMovement(KeyCode[] kl, Direction d, double dt) {
 		for(KeyCode k : kl) {
 			if(input.isKeyPressed(k)) {
-	    		this.hero.move(d, dt);
-	    		if(!this.playField.contains(this.hero.getLocation())) {
-	        		hero.undoMovement();
-	        	}
+//	    		this.hero.move(d, dt);
+//	    		if(!this.playField.contains(this.hero.getLocation())) {
+//	        		hero.undoMovement();
+//	        	}
 	    		return true;
 	    	}
 		}
