@@ -1,13 +1,22 @@
 package net.exodiusmc.example.entity.living;
 
-import net.exodiusmc.engine.Location;
-import net.exodiusmc.example.entity.Entity;
+import net.exodiusmc.engine.shape.Rectangle;
+import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.example.entity.LivingEntity;
+import net.exodiusmc.example.entity.Util;
 
-public class Skeleton extends Entity {
+public class Skeleton extends LivingEntity {
 
-	public Skeleton(Location pos) {
-		super(pos);
-		// TODO Auto-generated constructor stub
+	public Skeleton(Rectangle playField) {
+		super(Util.RandomSpawnLocation(playField));
+		
+		setMaxHealth(1);
+		setMovementSpeed(CoreUtils.randomDoubleInRange(0.5, 0.85));
+	}
+
+	@Override
+	public void death() {
+		
 	}
 
 }
