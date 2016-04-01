@@ -11,7 +11,7 @@ public class Skeleton extends LivingEntity {
 	public Skeleton(Rectangle playField) {
 		super(Util.RandomSpawnLocation(playField), EntityType.SKELETON);
 		
-		setMaxHealth(1);
+		setMaxHealth(1, true);
 		setMovementSpeed(CoreUtils.randomDoubleInRange(0.5, 0.85));
 	}
 

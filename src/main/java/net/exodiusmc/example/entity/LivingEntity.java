@@ -8,8 +8,8 @@ public abstract class LivingEntity extends Entity {
 	private int maxHealth;
 	private double movementSpeed = 1;
 	private double maxAcceleration = 5;
-	private double acceleration_X = 0;
-	private double acceleration_Y = 0;
+	protected double acceleration_X = 0;
+	protected double acceleration_Y = 0;
 
 	public LivingEntity(Location pos, EntityType type) {
 		super(pos, type);
@@ -28,8 +28,14 @@ public abstract class LivingEntity extends Entity {
 	}
 
 	public void setMaxHealth(int maxHealth) {
+		setMaxHealth(maxHealth, false);
+	}
+
+	public void setMaxHealth(int maxHealth, boolean update) {
 		this.maxHealth = maxHealth;
-		this.health = maxHealth;
+		if(update) {
+			this.health = maxHealth;
+		}
 	}
 
 	public void damage(int a) {
@@ -48,10 +54,6 @@ public abstract class LivingEntity extends Entity {
 	}
 
 	public void moveTo(Rectangle field, Location l) {
-		moveTo(field, l, false);
-	}
-
-	public void moveTo(Rectangle field, Location l, boolean checkField) {
 		double toLocX = getLocation().getX() - l.getX();
 		double toLocY = getLocation().getY() - l.getY();
 
@@ -74,10 +76,11 @@ public abstract class LivingEntity extends Entity {
 			this.acceleration_Y = -this.maxAcceleration;
 		}
 
-		handleMovement(field, checkField);
+		handleMovement(field);
 	}
 
-	private void handleMovement(Rectangle field, boolean checkRect) {
+	public void handleMovement(Rectangle field) {
+		boolean checkRect = this.getEntityType() == EntityType.HERO;
 		saveLocation();
 
 		getLocation().setX(getLocation().getX() + this.acceleration_X);

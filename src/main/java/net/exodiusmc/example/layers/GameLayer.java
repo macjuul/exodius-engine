@@ -1,6 +1,8 @@
 package net.exodiusmc.example.layers;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -18,6 +20,7 @@ import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
 import net.exodiusmc.example.entity.Entity;
+import net.exodiusmc.example.entity.LivingEntity;
 import net.exodiusmc.example.entity.living.Hero;
 import net.exodiusmc.example.entity.living.Monster;
 import net.exodiusmc.example.entity.powerup.HeartExtra;
@@ -64,16 +67,18 @@ public class GameLayer implements Layer {
         Location l = playField.getLocationRelative(0.59, 0.59);
         
         this.hero = new Hero(l);
+        this.entities.add(this.hero);
+        
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
     }
     
     @Override
     public void update(double delta, long frame) {
     	if(this.hero.getHealth() > 0) {
-	    	boolean r1 = handleMovement(new KeyCode[]{KeyCode.UP, KeyCode.W}, Direction.UP, delta);
-	    	boolean r2 = handleMovement(new KeyCode[]{KeyCode.RIGHT, KeyCode.D}, Direction.RIGHT, delta);
-	    	boolean r3 = handleMovement(new KeyCode[]{KeyCode.DOWN, KeyCode.S}, Direction.DOWN, delta);
-	    	boolean r4 = handleMovement(new KeyCode[]{KeyCode.LEFT, KeyCode.A}, Direction.LEFT, delta);
+	    	boolean r1 = handleMovement(new KeyCode[]{KeyCode.UP, KeyCode.W}, Direction.UP);
+	    	boolean r2 = handleMovement(new KeyCode[]{KeyCode.RIGHT, KeyCode.D}, Direction.RIGHT);
+	    	boolean r3 = handleMovement(new KeyCode[]{KeyCode.DOWN, KeyCode.S}, Direction.DOWN);
+	    	boolean r4 = handleMovement(new KeyCode[]{KeyCode.LEFT, KeyCode.A}, Direction.LEFT);
 	    	
 	    	if(frame % 5 == 0 && (r1 || r2 || r3 || r4)) {
 	    		this.updateSprite = true;
@@ -85,17 +90,19 @@ public class GameLayer implements Layer {
 	    		this.hero.facingCache = this.hero.facing;
 	    	}
 	    	
-	    	if(frame % 50 == 0) {
+	    	if(frame % 100 == 0) {
 	    		this.entities.add(new Monster(this.playField));
 	    	}
-	    	
+
 	    	if(frame % 90 == 0) {
 	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.entities.add(new HeartPower(this.playField));
 	    	}
 	    	
 	    	if(frame % 120 == 0) {
-	    		if(CoreUtils.randomIntInRange(0, 15) == 0) this.entities.add(new HeartExtra(this.playField));
+	    		if(CoreUtils.randomIntInRange(0, 20) == 0) this.entities.add(new HeartExtra(this.playField));
 	    	}
+	    	
+    		sortEntities();
 	    	
 	    	Location heroLoc = this.hero.getLocation();
 	    	
@@ -103,24 +110,34 @@ public class GameLayer implements Layer {
 	    	
 	    	while(i.hasNext()) {
 	    		Entity m = i.next();
-//	    		if(m.getLocation().distance(heroLoc) < 30 && this.hero.dmgTick == 0) {
-//	    			this.hero.damage();
-//	    			m.kill();
-//	    			i.remove();
-//	    		} else {
-//	    			m.move(Direction.CUSTOM, 0.4, this.hero.getLocation());
-//	    			m.handleMovement(delta, this.playField, false);
-//	    		}
+	    		
+	    		if(m instanceof LivingEntity) {
+	    			((LivingEntity) m).handleMovement(this.playField);
+	    		}
+	    		
 	    		switch(m.getEntityType()) {
 				case EXTRA_HEART:
-					break;
-				case HERO:
+					if(m.getLocation().distance(heroLoc) < 30) {
+	    				((HeartExtra) m).pickup(this.hero);
+						i.remove();
+	    			}
 					break;
 				case MONSTER:
+					if(m.getLocation().distance(heroLoc) < 30 && this.hero.dmgTick == 0) {
+						this.hero.damageHero(1);
+		    			((LivingEntity) m).damage(1);
+		    			i.remove();
+					} else {
+						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation());
+		    		}
 					break;
 				case MUMMY:
 					break;
 				case POWER_HEART:
+					if(m.getLocation().distance(heroLoc) < 30 && this.hero.getMaxHealth() != this.hero.getHealth()) {
+	    				((HeartPower) m).pickup(this.hero);
+						i.remove();
+	    			}
 					break;
 				case SKELETON:
 					break;
@@ -128,23 +145,6 @@ public class GameLayer implements Layer {
 					break;
 	    		}
 	    	}
-	    	
-//	    	Iterator<Heart> i2 = hearts.iterator();
-//	    	
-//	    	while(i2.hasNext()) {
-//	    		Heart h = i2.next();
-//	    		if(h.getLocation().distance(heroLoc) < 30) {
-//	    			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
-//	    				HeartPower heart1 = (HeartPower) h;
-//	    				heart1.pickup(this.hero);
-//						i2.remove();
-//	    			} else if(h instanceof HeartExtra) {
-//	    				HeartExtra heart2 = (HeartExtra) h;
-//						heart2.pickup(this.hero);
-//						i2.remove();
-//	    			}
-//	    		}
-//	    	}
 	    	
 	    	if(this.hero.damageTick > 0) {
 	    		this.hero.damageTick -= 0.1;
@@ -165,33 +165,22 @@ public class GameLayer implements Layer {
 	@Override
 	public void render(GraphicsContext gfx) {
 		Image sprite = heroSprite.nextFrame(this.updateSprite);
-		sprite = FileUtils.colorizeImage(sprite, Color.RED, this.hero.damageTick);
+		sprite = FileUtils.colorizeImage(sprite, Color.RED, this.hero.dmgTick);
 		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
-		
-//		for(Heart h : hearts) {
-//			if(h instanceof HeartPower && this.hero.getMaxHealth() != this.hero.getHealth()) {
-//				gfx.drawImage(this.heartFull, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
-//			} else if(h instanceof HeartExtra) {
-//				gfx.drawImage(this.heartExtra, h.getLocation().getX() - (this.heartFull.getWidth() / 2), h.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartExtra.getWidth() * 0.75, this.heartExtra.getHeight() * 0.75);
-//			}
-//		}
-//		
-//		for(Monster m : monsters) {
-//			gfx.drawImage(this.monsterImg, m.getLocation().getX() - (monsterImg.getWidth() / 2), m.getLocation().getY() - (monsterImg.getHeight() / 2), 30, 30);
-//		}
 		
 		for(Entity e : this.entities) {
 			switch(e.getEntityType()) {
 			case EXTRA_HEART:
-				break;
-			case HERO:
+				gfx.drawImage(this.heartExtra, e.getLocation().getX() - (this.heartFull.getWidth() / 2), e.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartExtra.getWidth() * 0.75, this.heartExtra.getHeight() * 0.75);
 				break;
 			case MONSTER:
+				gfx.drawImage(this.monsterImg, e.getLocation().getX() - (monsterImg.getWidth() / 2), e.getLocation().getY() - (monsterImg.getHeight() / 2), 30, 30);
 				break;
 			case MUMMY:
 				break;
 			case POWER_HEART:
+				gfx.drawImage(this.heartFull, e.getLocation().getX() - (this.heartFull.getWidth() / 2), e.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
 				break;
 			case SKELETON:
 				break;
@@ -234,13 +223,14 @@ public class GameLayer implements Layer {
 		return true;
 	}
 	
-	private boolean handleMovement(KeyCode[] kl, Direction d, double dt) {
+	private boolean handleMovement(KeyCode[] kl, Direction d) {
 		for(KeyCode k : kl) {
 			if(input.isKeyPressed(k)) {
-//	    		this.hero.move(d, dt);
-//	    		if(!this.playField.contains(this.hero.getLocation())) {
-//	        		hero.undoMovement();
-//	        	}
+				this.hero.saveLocation();
+	    		this.hero.move(d, this.playField);
+	    		if(!this.playField.contains(this.hero.getLocation())) {
+	        		hero.restoreLocation();
+	        	}
 	    		return true;
 	    	}
 		}
@@ -253,4 +243,12 @@ public class GameLayer implements Layer {
 
 	@Override
 	public void dispose() {}
+	
+	private void sortEntities() {
+		Collections.sort(this.entities, new Comparator<Entity>() {
+		    public int compare(Entity e1, Entity e2) {
+		        return e1.getLocation().getY() > e2.getLocation().getY() ? 1 : -1;
+		    }
+		});
+	}
 }
