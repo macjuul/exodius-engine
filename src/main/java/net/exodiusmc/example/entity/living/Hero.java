@@ -4,14 +4,15 @@ import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.example.Main;
-import net.exodiusmc.example.entity.Entity;
+import net.exodiusmc.example.entity.LivingEntity;
 import net.exodiusmc.example.layers.DeathLayer;
 
-public class Hero extends Entity {
+public class Hero extends LivingEntity {
 	private int maxHealth = 10;
 	private int health = maxHealth;
 	private SpriteAnimation sprite;
 	
+	public Direction facing;
 	public Direction facingCache;
 	public double damageTick = 0;
 	public double dmgTick = 0;
@@ -22,6 +23,7 @@ public class Hero extends Entity {
 		this.facing = Direction.DOWN;
 		this.facingCache = Direction.DOWN;
 		
+		setMaxHealth(10);
 		setMovementSpeed(0.6);
 	}
 	
