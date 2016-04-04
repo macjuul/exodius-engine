@@ -95,6 +95,6 @@ public class Rectangle {
 		if(xp < 0 || xp > 1 || yp < 0 || xp > 1) {
 			throw new IllegalArgumentException("the given arguments must be beteen 0.0 and 1.0");
 		}
-		return new Location(this.width * xp, this.height * yp);
+		return new Location(this.min.getX() + this.width * xp, this.min.getY() + this.height * yp);
 	}
 }
