@@ -68,10 +68,10 @@ public class GameLayer implements Layer {
         this.entities = new ArrayList<Entity>();
         this.fade = 0;
         
-        Location l = playField.getLocationRelative(0.59, 0.59);
+        Location l = playField.getLocationRelative(0.5, 0.5);
         
         this.hero = new Hero(l);
-        this.hero.setType(HeroType.PURPLE, this.heroSprite);
+        this.hero.setType(HeroType.RED, this.heroSprite);
         this.entities.add(this.hero);
         
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
