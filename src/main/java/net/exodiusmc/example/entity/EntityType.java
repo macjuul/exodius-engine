@@ -1,10 +1,20 @@
 package net.exodiusmc.example.entity;
 
 public enum EntityType {
-	HERO,
-	MONSTER,
-	MUMMY,
-	SKELETON,
-	EXTRA_HEART,
-	POWER_HEART;
+	HERO(false),
+	MONSTER(true),
+	MUMMY(true),
+	SKELETON(true),
+	EXTRA_HEART(false),
+	POWER_HEART(false);
+	
+	private boolean hostile;
+	
+	private EntityType(boolean hostile) {
+		this.hostile = hostile;
+	}
+	
+	public boolean isHostile() {
+		return hostile;
+	}
 }

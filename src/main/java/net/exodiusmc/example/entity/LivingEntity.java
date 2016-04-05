@@ -1,7 +1,10 @@
 package net.exodiusmc.example.entity;
 
+import java.util.ArrayList;
+
 import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.shape.Rectangle;
+import net.exodiusmc.example.entity.living.Hero;
 
 public abstract class LivingEntity extends Entity {
 	private int health;
@@ -53,7 +56,7 @@ public abstract class LivingEntity extends Entity {
 		}
 	}
 
-	public void moveTo(Rectangle field, Location l) {
+	public void moveTo(Rectangle field, Location l, ArrayList<Entity> entities) {
 		double toLocX = getLocation().getX() - l.getX();
 		double toLocY = getLocation().getY() - l.getY();
 
@@ -76,16 +79,24 @@ public abstract class LivingEntity extends Entity {
 			this.acceleration_Y = -this.maxAcceleration;
 		}
 
-		handleMovement(field);
+		handleMovement(field, entities);
 	}
 
-	public void handleMovement(Rectangle field) {
+	public void handleMovement(Rectangle field, ArrayList<Entity> entities) {
 		boolean checkRect = this.getEntityType() == EntityType.HERO;
 		saveLocation();
 
 		getLocation().setX(getLocation().getX() + this.acceleration_X);
 		if(!field.contains(getLocation()) && checkRect) {
 			restoreLocation();
+		}
+		
+		for(Entity e : entities) {
+			if(e instanceof LivingEntity && !(e instanceof Hero) && e != this) {
+				if(e.getLocation().distance(this.getLocation()) < 20) {
+					restoreLocation();
+				}
+			}
 		}
 
 		this.acceleration_X *= 0.8;
@@ -95,6 +106,14 @@ public abstract class LivingEntity extends Entity {
 		getLocation().setY(getLocation().getY() + this.acceleration_Y);
 		if(!field.contains(getLocation()) && checkRect) {
 			restoreLocation();
+		}
+		
+		for(Entity e : entities) {
+			if(e instanceof LivingEntity && !(e instanceof Hero) && e != this) {
+				if(e.getLocation().distance(this.getLocation()) < 20) {
+					restoreLocation();
+				}
+			}
 		}
 
 		this.acceleration_Y *= 0.8;

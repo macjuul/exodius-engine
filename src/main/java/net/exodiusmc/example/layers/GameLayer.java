@@ -112,7 +112,7 @@ public class GameLayer implements Layer {
 	    		Entity m = i.next();
 	    		
 	    		if(m instanceof LivingEntity) {
-	    			((LivingEntity) m).handleMovement(this.playField);
+	    			((LivingEntity) m).handleMovement(this.playField, this.entities);
 	    		}
 	    		
 	    		switch(m.getEntityType()) {
@@ -128,7 +128,7 @@ public class GameLayer implements Layer {
 		    			((LivingEntity) m).damage(1);
 		    			i.remove();
 					} else {
-						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation());
+						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
 		    		}
 					break;
 				case MUMMY:
