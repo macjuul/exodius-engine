@@ -20,6 +20,7 @@ import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
 import net.exodiusmc.example.entity.Entity;
+import net.exodiusmc.example.entity.HeroType;
 import net.exodiusmc.example.entity.LivingEntity;
 import net.exodiusmc.example.entity.living.Hero;
 import net.exodiusmc.example.entity.living.Monster;
@@ -70,6 +71,7 @@ public class GameLayer implements Layer {
         Location l = playField.getLocationRelative(0.59, 0.59);
         
         this.hero = new Hero(l);
+        this.hero.setType(HeroType.PURPLE, this.heroSprite);
         this.entities.add(this.hero);
         
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});

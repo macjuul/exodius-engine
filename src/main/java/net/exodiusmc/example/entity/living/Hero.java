@@ -4,13 +4,16 @@ import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.engine.shape.Rectangle;
+import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
 import net.exodiusmc.example.entity.EntityType;
+import net.exodiusmc.example.entity.HeroType;
 import net.exodiusmc.example.entity.LivingEntity;
 import net.exodiusmc.example.layers.DeathLayer;
 
 public class Hero extends LivingEntity {
 	private SpriteAnimation sprite;
+	private HeroType type;
 	
 	public Direction facing;
 	public Direction facingCache;
@@ -65,5 +68,14 @@ public class Hero extends LivingEntity {
 			this.setHealth(0);
 			death();
 		}
+	}
+
+	public HeroType getType() {
+		return type;
+	}
+
+	public void setType(HeroType type, SpriteAnimation s) {
+		this.type = type;
+		s.setImage(FileUtils.LoadImage(type.getFileName()));
 	}
 }
