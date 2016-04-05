@@ -60,7 +60,7 @@ public class GameLayer implements Layer {
         this.playField = new Rectangle(new Location(50, 50), new Location(564, 525));
         this.input = Main.getInputMngr();
         this.heroSprite = new SpriteAnimation(heroImg, 5);
-        this.monsterSprite = new SpriteAnimation(monsterImg, 4);
+        this.monsterSprite = new SpriteAnimation(monsterImg, 5);
         this.updateSprite = false;
         this.monsterHead = FileUtils.LoadImage("head.png");
         this.scoreFont = (new Font("Arial", 25));
@@ -73,7 +73,7 @@ public class GameLayer implements Layer {
         this.entities.add(this.hero);
         
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
-        this.monsterSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 2, 1});
+        this.monsterSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
     }
     
     @Override
