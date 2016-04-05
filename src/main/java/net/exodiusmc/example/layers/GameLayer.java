@@ -37,9 +37,11 @@ public class GameLayer implements Layer {
     private Image trees;
     private Hero hero;
     private SpriteAnimation heroSprite;
+    private SpriteAnimation monsterSprite;
     private Rectangle playField;
     private InputManager input;
     private boolean updateSprite;
+    private boolean updateMonsterSprite;
     private Font scoreFont;
     private int score;
     private int heartSize = 20;
@@ -50,7 +52,7 @@ public class GameLayer implements Layer {
     public GameLayer() {
     	this.groundImg = FileUtils.LoadImage("ground.png");
     	this.heroImg = FileUtils.LoadImage("hero_anim.png");
-        this.monsterImg = FileUtils.LoadImage("monster.png");
+        this.monsterImg = FileUtils.LoadImage("monster_anim.png");
         this.heartEmpty = FileUtils.LoadImage("heart_empty.png");
         this.heartFull = FileUtils.LoadImage("heart_full.png");
         this.heartExtra = FileUtils.LoadImage("heart_plus.png");
@@ -58,6 +60,7 @@ public class GameLayer implements Layer {
         this.playField = new Rectangle(new Location(50, 50), new Location(564, 525));
         this.input = Main.getInputMngr();
         this.heroSprite = new SpriteAnimation(heroImg, 5);
+        this.monsterSprite = new SpriteAnimation(monsterImg, 5);
         this.updateSprite = false;
         this.monsterHead = FileUtils.LoadImage("head.png");
         this.scoreFont = (new Font("Arial", 25));
@@ -70,6 +73,7 @@ public class GameLayer implements Layer {
         this.entities.add(this.hero);
         
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
+        this.monsterSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
     }
     
     @Override
@@ -84,6 +88,12 @@ public class GameLayer implements Layer {
 	    		this.updateSprite = true;
 	    	} else {
 	    		this.updateSprite = false;
+	    	}
+	    	
+	    	if(frame % 5 == 0) {
+	    		this.updateMonsterSprite = true;
+	    	} else {
+	    		this.updateMonsterSprite = false;
 	    	}
 	    	
 	    	if(this.hero.facingCache != this.hero.facing) {
@@ -165,6 +175,7 @@ public class GameLayer implements Layer {
 	@Override
 	public void render(GraphicsContext gfx) {
 		Image sprite = heroSprite.nextFrame(this.updateSprite);
+		Image monSprite = monsterSprite.nextFrame(this.updateMonsterSprite);
 		sprite = FileUtils.colorizeImage(sprite, Color.RED, this.hero.dmgTick);
 		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
@@ -175,7 +186,7 @@ public class GameLayer implements Layer {
 				gfx.drawImage(this.heartExtra, e.getLocation().getX() - (this.heartFull.getWidth() / 2), e.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartExtra.getWidth() * 0.75, this.heartExtra.getHeight() * 0.75);
 				break;
 			case MONSTER:
-				gfx.drawImage(this.monsterImg, e.getLocation().getX() - (monsterImg.getWidth() / 2), e.getLocation().getY() - (monsterImg.getHeight() / 2), 30, 30);
+				gfx.drawImage(monSprite, e.getLocation().getX() - (monSprite.getWidth() / 2), e.getLocation().getY() - (monSprite.getHeight() / 2), 30, 30);
 				break;
 			case MUMMY:
 				break;
