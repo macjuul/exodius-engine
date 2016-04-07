@@ -6,6 +6,7 @@ import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
+import net.exodiusmc.example.MovementKeys;
 import net.exodiusmc.example.entity.EntityType;
 import net.exodiusmc.example.entity.HeroType;
 import net.exodiusmc.example.entity.LivingEntity;
@@ -14,6 +15,7 @@ import net.exodiusmc.example.layers.DeathLayer;
 public class Hero extends LivingEntity {
 	private SpriteAnimation sprite;
 	private HeroType type;
+	private MovementKeys keys;
 	
 	public Direction facing;
 	public Direction facingCache;
@@ -25,8 +27,9 @@ public class Hero extends LivingEntity {
 		
 		this.facing = Direction.DOWN;
 		this.facingCache = Direction.DOWN;
+		this.keys = MovementKeys.ARROWS;
 		
-		setMaxHealth(10, true);
+		setMaxHealth(500, true);
 		setMovementSpeed(0.6);
 	}
 	

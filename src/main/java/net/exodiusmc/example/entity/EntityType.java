@@ -6,7 +6,8 @@ public enum EntityType {
 	MUMMY(true),
 	SKELETON(true),
 	EXTRA_HEART(false),
-	POWER_HEART(false);
+	POWER_HEART(false),
+	DEMON(true);
 	
 	private boolean hostile;
 	

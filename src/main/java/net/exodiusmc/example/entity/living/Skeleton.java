@@ -12,7 +12,7 @@ public class Skeleton extends LivingEntity {
 		super(Util.RandomSpawnLocation(playField), EntityType.SKELETON);
 		
 		setMaxHealth(1, true);
-		setMovementSpeed(CoreUtils.randomDoubleInRange(0.5, 0.85));
+		setMovementSpeed(CoreUtils.randomDoubleInRange(0.2, 0.4));
 	}
 
 	@Override

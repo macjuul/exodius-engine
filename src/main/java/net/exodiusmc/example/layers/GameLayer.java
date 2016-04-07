@@ -22,8 +22,11 @@ import net.exodiusmc.example.Main;
 import net.exodiusmc.example.entity.Entity;
 import net.exodiusmc.example.entity.HeroType;
 import net.exodiusmc.example.entity.LivingEntity;
+import net.exodiusmc.example.entity.living.Demon;
 import net.exodiusmc.example.entity.living.Hero;
 import net.exodiusmc.example.entity.living.Monster;
+import net.exodiusmc.example.entity.living.Mummy;
+import net.exodiusmc.example.entity.living.Skeleton;
 import net.exodiusmc.example.entity.powerup.HeartExtra;
 import net.exodiusmc.example.entity.powerup.HeartPower;
 
@@ -32,6 +35,9 @@ public class GameLayer implements Layer {
     private Image heroImg;
     private Image monsterHead;
     private Image monsterImg;
+    private Image skeletonImg;
+    private Image mummyImg;
+    private Image demonImg;
     private Image heartFull;
     private Image heartEmpty;
     private Image heartExtra;
@@ -53,7 +59,10 @@ public class GameLayer implements Layer {
     public GameLayer() {
     	this.groundImg = FileUtils.LoadImage("ground.png");
     	this.heroImg = FileUtils.LoadImage("hero_anim.png");
-        this.monsterImg = FileUtils.LoadImage("monster_anim.png");
+    	this.monsterImg = FileUtils.LoadImage("monster_anim.png");
+    	this.skeletonImg = FileUtils.LoadImage("skeleton.png");
+    	this.mummyImg = FileUtils.LoadImage("mummy.png");
+        this.demonImg = FileUtils.LoadImage("demon.png");
         this.heartEmpty = FileUtils.LoadImage("heart_empty.png");
         this.heartFull = FileUtils.LoadImage("heart_full.png");
         this.heartExtra = FileUtils.LoadImage("heart_plus.png");
@@ -102,8 +111,11 @@ public class GameLayer implements Layer {
 	    		this.hero.facingCache = this.hero.facing;
 	    	}
 	    	
-	    	if(frame % 100 == 0) {
+	    	if(frame % 30 == 0) {
 	    		this.entities.add(new Monster(this.playField));
+	    		this.entities.add(new Skeleton(this.playField));
+	    		this.entities.add(new Mummy(this.playField));
+	    		this.entities.add(new Demon(this.playField));
 	    	}
 
 	    	if(frame % 90 == 0) {
@@ -134,24 +146,23 @@ public class GameLayer implements Layer {
 						i.remove();
 	    			}
 					break;
+				case MUMMY:
 				case MONSTER:
+				case DEMON:
+				case SKELETON:
 					if(m.getLocation().distance(heroLoc) < 30 && this.hero.dmgTick == 0) {
 						this.hero.damageHero(1);
 		    			((LivingEntity) m).damage(1);
-		    			i.remove();
+		    			// i.remove();
 					} else {
 						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
 		    		}
-					break;
-				case MUMMY:
 					break;
 				case POWER_HEART:
 					if(m.getLocation().distance(heroLoc) < 30 && this.hero.getMaxHealth() != this.hero.getHealth()) {
 	    				((HeartPower) m).pickup(this.hero);
 						i.remove();
 	    			}
-					break;
-				case SKELETON:
 					break;
 				default:
 					break;
@@ -188,14 +199,19 @@ public class GameLayer implements Layer {
 				gfx.drawImage(this.heartExtra, e.getLocation().getX() - (this.heartFull.getWidth() / 2), e.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartExtra.getWidth() * 0.75, this.heartExtra.getHeight() * 0.75);
 				break;
 			case MONSTER:
-				gfx.drawImage(monSprite, e.getLocation().getX() - (monSprite.getWidth() / 2), e.getLocation().getY() - (monSprite.getHeight() / 2), 30, 30);
-				break;
-			case MUMMY:
+				gfx.drawImage(monSprite, e.getLocation().getX() - (monSprite.getWidth() / 2), e.getLocation().getY() - (monSprite.getHeight() / 2), 30, 32);
 				break;
 			case POWER_HEART:
 				gfx.drawImage(this.heartFull, e.getLocation().getX() - (this.heartFull.getWidth() / 2), e.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
 				break;
 			case SKELETON:
+				gfx.drawImage(skeletonImg, e.getLocation().getX() - (skeletonImg.getWidth() / 2), e.getLocation().getY() - (skeletonImg.getHeight() / 2), 30, 32);
+				break;
+			case MUMMY:
+				gfx.drawImage(mummyImg, e.getLocation().getX() - (mummyImg.getWidth() / 2), e.getLocation().getY() - (mummyImg.getHeight() / 2), 30, 32);
+				break;
+			case DEMON:
+				gfx.drawImage(demonImg, e.getLocation().getX() - (demonImg.getWidth() / 2), e.getLocation().getY() - (demonImg.getHeight() / 2), 30, 34);
 				break;
 			default:
 				break;
