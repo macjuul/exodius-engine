@@ -22,13 +22,11 @@ import net.exodiusmc.example.Main;
 import net.exodiusmc.example.entity.Entity;
 import net.exodiusmc.example.entity.HeroType;
 import net.exodiusmc.example.entity.LivingEntity;
-import net.exodiusmc.example.entity.living.Demon;
+import net.exodiusmc.example.entity.fixed.HeartExtra;
+import net.exodiusmc.example.entity.fixed.HeartPower;
 import net.exodiusmc.example.entity.living.Hero;
 import net.exodiusmc.example.entity.living.Monster;
-import net.exodiusmc.example.entity.living.Mummy;
 import net.exodiusmc.example.entity.living.Skeleton;
-import net.exodiusmc.example.entity.powerup.HeartExtra;
-import net.exodiusmc.example.entity.powerup.HeartPower;
 
 public class GameLayer implements Layer {
 	private Image groundImg;
@@ -112,10 +110,11 @@ public class GameLayer implements Layer {
 	    	}
 	    	
 	    	if(frame % 30 == 0) {
-	    		this.entities.add(new Monster(this.playField));
-	    		this.entities.add(new Skeleton(this.playField));
-	    		this.entities.add(new Mummy(this.playField));
-	    		this.entities.add(new Demon(this.playField));
+	    		if(CoreUtils.randomIntInRange(0, 2) == 0) {
+	    			this.entities.add(new Monster(this.playField));
+	    		} else {
+	    			this.entities.add(new Skeleton(this.playField));
+	    		}
 	    	}
 
 	    	if(frame % 90 == 0) {
@@ -148,12 +147,19 @@ public class GameLayer implements Layer {
 					break;
 				case MUMMY:
 				case MONSTER:
+					if(m.getLocation().distance(heroLoc) < 40) {
+						if(this.hero.dmgTick == 0) {
+							this.hero.damageHero(1);
+							((LivingEntity) m).damage(1);
+						}
+					} else {
+						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
+		    		}
+					break;
 				case DEMON:
 				case SKELETON:
-					if(m.getLocation().distance(heroLoc) < 30 && this.hero.dmgTick == 0) {
-						this.hero.damageHero(1);
-		    			((LivingEntity) m).damage(1);
-		    			// i.remove();
+					if(m.getLocation().distance(heroLoc) < 150) {
+						// TODO: Skeleton code
 					} else {
 						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
 		    		}

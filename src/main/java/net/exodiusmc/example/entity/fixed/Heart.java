@@ -1,4 +1,4 @@
-package net.exodiusmc.example.entity.powerup;
+package net.exodiusmc.example.entity.fixed;
 
 import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
