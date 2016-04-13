@@ -53,7 +53,6 @@ public class GameLayer implements Layer {
     private boolean updateSprite;
     private boolean updateMonsterSprite;
     private Font scoreFont;
-    private int score;
     private int heartSize = 20;
     private float fade;
     private double swordRot = 0;
@@ -308,9 +307,9 @@ public class GameLayer implements Layer {
 		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);
 		gfx.setFill(Color.YELLOW);
 		gfx.setFont(this.scoreFont);
-		gfx.fillText(String.valueOf(score), 83, 95);
+		gfx.fillText(String.valueOf(Main.getMain().score), 83, 95);
 		gfx.setStroke(Color.YELLOW);
-		gfx.strokeText(String.valueOf(score), 83, 95);
+		gfx.strokeText(String.valueOf(Main.getMain().score), 83, 95);
 		
 		for(int h = 0; h < this.hero.getHealth(); h++) {
 			gfx.drawImage(this.heartFull, 42 + ((this.heartSize + 2) * h), 45, this.heartSize, this.heartSize);
@@ -351,7 +350,7 @@ public class GameLayer implements Layer {
 	}
 	
 	public void score() {
-		this.score++;
+		Main.getMain().score++;
 	}
 
 	@Override
