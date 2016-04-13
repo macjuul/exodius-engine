@@ -21,12 +21,14 @@ import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.engine.util.RenderUtils;
 import net.exodiusmc.example.Main;
 import net.exodiusmc.example.entity.Entity;
+import net.exodiusmc.example.entity.EntityType;
 import net.exodiusmc.example.entity.HeroType;
 import net.exodiusmc.example.entity.LivingEntity;
 import net.exodiusmc.example.entity.fixed.Arrow;
 import net.exodiusmc.example.entity.fixed.HeartExtra;
 import net.exodiusmc.example.entity.fixed.HeartPower;
 import net.exodiusmc.example.entity.living.Hero;
+import net.exodiusmc.example.entity.living.Monster;
 import net.exodiusmc.example.entity.living.Skeleton;
 
 public class GameLayer implements Layer {
@@ -54,7 +56,10 @@ public class GameLayer implements Layer {
     private int score;
     private int heartSize = 20;
     private float fade;
-    private int swordRot = -90;
+    private double swordRot = 0;
+    private boolean swordActive;
+    private double swordFade = 1;
+    private int swordDir;
     
     public ArrayList<Entity> entities;
     
@@ -111,12 +116,8 @@ public class GameLayer implements Layer {
 	    		this.updateMonsterSprite = false;
 	    	}
 	    	
-	    	if(this.hero.facingCache != this.hero.facing) {
-	    		this.hero.facingCache = this.hero.facing;
-	    	}
-	    	
-	    	if(frame == 0 || frame % 80 == 0) {
-	    		this.entities.add(new Skeleton(this.playField));
+	    	if(frame == 0 || frame % 100 == 0) {
+	    		this.entities.add(new Monster(this.playField));
 	    	}
 	    	
 	    	if(frame % 90 == 0) {
@@ -135,76 +136,85 @@ public class GameLayer implements Layer {
 	    	
 	    	ArrayList<Skeleton> shooting = new ArrayList<Skeleton>();
 	    	
+	    	double angle = this.swordRot - 45;
+			
+			angle += this.swordDir;
+	    	
 	    	while(i.hasNext()) {
 	    		Entity m = i.next();
 	    		
 	    		if(m instanceof LivingEntity) {
 	    			((LivingEntity) m).handleMovement(this.playField, this.entities);
 	    		}
-	    		
-	    		switch(m.getEntityType()) {
-				case EXTRA_HEART:
-					if(m.getLocation().distance(heroLoc) < 30) {
-	    				((HeartExtra) m).pickup(this.hero);
-						i.remove();
-	    			}
-					break;
-				case ARROW:
-					Arrow a = (Arrow) m;
-					a.move();
-					
-					if(m.getLocation().distance(heroLoc) < 30) {
-	    				((Arrow) m).pickup(this.hero);
-						i.remove();
-	    			}
-					break;
-				case MUMMY:
-				case MONSTER:
-					if(m.getLocation().distance(heroLoc) < 40) {
-						if(this.hero.dmgTick == 0) {
-							this.hero.damageHero(1);
-							((LivingEntity) m).damage(1);
-						}
-					} else {
-						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
-		    		}
-					break;
-				case DEMON:
-				case SKELETON:
-					if(m.getLocation().distance(heroLoc) < 110) {
-						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities, true);
-					} else if(m.getLocation().distance(heroLoc) < 200) {
-						Skeleton s = (Skeleton) m;
-						s.fireTick++;
+				
+	    		if(this.swordActive
+				&& m.getEntityType() != EntityType.HERO
+				&& m instanceof LivingEntity
+				&& ((this.hero.getLocation().getAngle(m.getLocation()) < angle - 10
+				&& angle + 10 < this.hero.getLocation().getAngle(m.getLocation()) + 90
+				&& this.hero.getLocation().distance(m.getLocation()) < 80)
+				|| this.hero.getLocation().distance(m.getLocation()) < 37)) {
+	    			((LivingEntity) m).damage(1);
+	    			i.remove();
+	    		} else {
+		    		switch(m.getEntityType()) {
+					case EXTRA_HEART:
+						if(m.getLocation().distance(heroLoc) < 30) {
+		    				((HeartExtra) m).pickup(this.hero);
+							i.remove();
+		    			}
+						break;
+					case ARROW:
+						Arrow a = (Arrow) m;
+						a.move();
 						
-						if(s.fireTick > 90) {
-							s.fireTick = 0;
-							shooting.add(s);
+						if(m.getLocation().distance(heroLoc) < 30) {
+		    				((Arrow) m).pickup(this.hero);
+							i.remove();
+		    			}
+						break;
+					case MUMMY:
+					case MONSTER:
+						if(m.getLocation().distance(heroLoc) < 40) {
+							if(this.hero.dmgTick == 0) {
+								this.hero.damageHero(1);
+								((LivingEntity) m).damage(1);
+							}
+						} else {
+							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
+			    		}
+						break;
+					case DEMON:
+					case SKELETON:
+						if(m.getLocation().distance(heroLoc) < 110) {
+							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities, true);
+						} else if(m.getLocation().distance(heroLoc) < 200) {
+							Skeleton s = (Skeleton) m;
+							s.fireTick++;
 							
-						}
-					} else {
-						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
+							if(s.fireTick > 90) {
+								s.fireTick = 0;
+								shooting.add(s);
+								
+							}
+						} else {
+							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
+			    		}
+						break;
+					case POWER_HEART:
+						if(m.getLocation().distance(heroLoc) < 30 && this.hero.getMaxHealth() != this.hero.getHealth()) {
+		    				((HeartPower) m).pickup(this.hero);
+							i.remove();
+		    			}
+						break;
+					default:
+						break;
 		    		}
-					break;
-				case POWER_HEART:
-					if(m.getLocation().distance(heroLoc) < 30 && this.hero.getMaxHealth() != this.hero.getHealth()) {
-	    				((HeartPower) m).pickup(this.hero);
-						i.remove();
-	    			}
-					break;
-				default:
-					break;
 	    		}
 	    	}
 	    	
 	    	for(Skeleton s : shooting) {
 	    		s.shoot(entities, this.hero.getLocation());
-	    	}
-	    	
-	    	if(this.hero.damageTick > 0) {
-	    		this.hero.damageTick -= 0.1;
-	    	} else {
-	    		this.hero.damageTick = 0;
 	    	}
 	    	
 	    	if(this.hero.dmgTick > 0) {
@@ -213,10 +223,33 @@ public class GameLayer implements Layer {
 	    		this.hero.dmgTick = 0;
 	    	};
 	    	
-	    	this.swordRot += 5;
+	    	if(Main.getInputMngr().isKeyPressed(KeyCode.SPACE) && this.hero.attackTick == 0) {
+	    		this.hero.attackTick = 40;
+	    		this.swordRot = 0;
+	    		this.swordActive = true;
+	    		this.swordFade = 0;
+	    		this.swordDir = this.hero.swordFacing.getBaseRotation();
+	    	}
 	    	
-	    	if(this.swordRot > 60) {
-	    		this.swordRot = -60;
+	    	if(this.hero.attackTick > 0) {
+	    		this.hero.attackTick -= 0.1;
+	    	}
+	    	
+	    	if(this.swordActive) {
+		    	this.swordRot += 5;
+		    	
+		    	if(this.swordRot < 20) {
+		    		this.swordFade = this.swordRot / 20;
+		    	} else if(this.swordRot > 70) {
+		    		this.swordFade = 1 - (this.swordRot - 70) / 20;
+		    	} else {
+		    		this.swordFade = 1;
+		    	}
+		    		
+		    	if(this.swordRot >= 90) {
+		    		this.swordRot = 0;
+		    		this.swordActive = false;
+		    	}
 	    	}
     	} else if(this.fade <= 0.4) {
     		this.fade += 0.03;
@@ -261,7 +294,15 @@ public class GameLayer implements Layer {
 		
 		gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 30, 30);
 		
-		RenderUtils.drawRotatedImage(gfx, sword, this.swordRot, 100 - (sword.getWidth() / 2), 100 - (sword.getHeight() / 2), 13 * 2, 25 * 2);
+		if(this.swordActive) {
+			double rot = this.swordRot - 45;
+			
+			rot += this.swordDir;
+			
+			gfx.setGlobalAlpha((double) this.swordFade);
+			RenderUtils.drawRotatedImage(gfx, sword, rot, this.hero.getLocation().getX() - ((sword.getWidth() * 0.85) / 2), this.hero.getLocation().getY() - ((sword.getHeight() * 0.85) / 2), 26 * 0.85, 115 * 0.85);
+			gfx.setGlobalAlpha(1);
+		}
 		
 		/* HUD */
 		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);

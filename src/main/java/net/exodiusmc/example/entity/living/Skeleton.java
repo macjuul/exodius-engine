@@ -12,13 +12,15 @@ import net.exodiusmc.example.entity.Util;
 import net.exodiusmc.example.entity.fixed.Arrow;
 
 public class Skeleton extends LivingEntity {
-	public int fireTick = 0;
+	public int fireTick;
 
 	public Skeleton(Rectangle playField) {
 		super(Util.RandomSpawnLocation(playField), EntityType.SKELETON);
 		
 		setMaxHealth(1, true);
 		setMovementSpeed(CoreUtils.randomDoubleInRange(0.35, 0.45));
+		setMaxAcceleration(0.7);
+		setFriction(0.93);
 	}
 
 	@Override

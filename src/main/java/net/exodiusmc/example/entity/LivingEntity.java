@@ -11,6 +11,7 @@ public abstract class LivingEntity extends Entity {
 	private int maxHealth;
 	private double movementSpeed = 1;
 	private double maxAcceleration = 5;
+	private double friction = 0.8;
 	protected double acceleration_X = 0;
 	protected double acceleration_Y = 0;
 
@@ -108,7 +109,7 @@ public abstract class LivingEntity extends Entity {
 			}
 		}
 
-		this.acceleration_X *= 0.8;
+		this.acceleration_X *= this.friction;
 
 		saveLocation();
 
@@ -125,7 +126,7 @@ public abstract class LivingEntity extends Entity {
 			}
 		}
 
-		this.acceleration_Y *= 0.8;
+		this.acceleration_Y *= this.friction;
 	}
 
 	public double getMovementSpeed() {
@@ -134,6 +135,22 @@ public abstract class LivingEntity extends Entity {
 
 	public void setMovementSpeed(double movementSpeed) {
 		this.movementSpeed = movementSpeed;
+	}
+
+	public double getMaxAcceleration() {
+		return maxAcceleration;
+	}
+
+	public void setMaxAcceleration(double maxAcceleration) {
+		this.maxAcceleration = maxAcceleration;
+	}
+
+	public double getFriction() {
+		return friction;
+	}
+
+	public void setFriction(double friction) {
+		this.friction = friction;
 	}
 
 	public abstract void death();
