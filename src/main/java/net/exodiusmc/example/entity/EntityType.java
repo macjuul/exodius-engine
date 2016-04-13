@@ -7,6 +7,7 @@ public enum EntityType {
 	SKELETON(true),
 	EXTRA_HEART(false),
 	POWER_HEART(false),
+	ARROW(false),
 	DEMON(true);
 	
 	private boolean hostile;

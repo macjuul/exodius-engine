@@ -18,14 +18,15 @@ import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
+import net.exodiusmc.engine.util.RenderUtils;
 import net.exodiusmc.example.Main;
 import net.exodiusmc.example.entity.Entity;
 import net.exodiusmc.example.entity.HeroType;
 import net.exodiusmc.example.entity.LivingEntity;
+import net.exodiusmc.example.entity.fixed.Arrow;
 import net.exodiusmc.example.entity.fixed.HeartExtra;
 import net.exodiusmc.example.entity.fixed.HeartPower;
 import net.exodiusmc.example.entity.living.Hero;
-import net.exodiusmc.example.entity.living.Monster;
 import net.exodiusmc.example.entity.living.Skeleton;
 
 public class GameLayer implements Layer {
@@ -39,7 +40,9 @@ public class GameLayer implements Layer {
     private Image heartFull;
     private Image heartEmpty;
     private Image heartExtra;
+    private Image sword;
     private Image trees;
+    private Image arrow;
     private Hero hero;
     private SpriteAnimation heroSprite;
     private SpriteAnimation monsterSprite;
@@ -51,6 +54,7 @@ public class GameLayer implements Layer {
     private int score;
     private int heartSize = 20;
     private float fade;
+    private int swordRot = -90;
     
     public ArrayList<Entity> entities;
     
@@ -65,6 +69,8 @@ public class GameLayer implements Layer {
         this.heartFull = FileUtils.LoadImage("heart_full.png");
         this.heartExtra = FileUtils.LoadImage("heart_plus.png");
         this.trees = FileUtils.LoadImage("trees.png");
+        this.sword = FileUtils.LoadImage("sword.png");
+        this.arrow = FileUtils.LoadImage("arrow.png");
         this.playField = new Rectangle(new Location(50, 50), new Location(564, 525));
         this.input = Main.getInputMngr();
         this.heroSprite = new SpriteAnimation(heroImg, 5);
@@ -109,14 +115,10 @@ public class GameLayer implements Layer {
 	    		this.hero.facingCache = this.hero.facing;
 	    	}
 	    	
-	    	if(frame % 30 == 0) {
-	    		if(CoreUtils.randomIntInRange(0, 2) == 0) {
-	    			this.entities.add(new Monster(this.playField));
-	    		} else {
-	    			this.entities.add(new Skeleton(this.playField));
-	    		}
+	    	if(frame == 0 || frame % 80 == 0) {
+	    		this.entities.add(new Skeleton(this.playField));
 	    	}
-
+	    	
 	    	if(frame % 90 == 0) {
 	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.entities.add(new HeartPower(this.playField));
 	    	}
@@ -131,6 +133,8 @@ public class GameLayer implements Layer {
 	    	
 	    	Iterator<Entity> i = this.entities.iterator();
 	    	
+	    	ArrayList<Skeleton> shooting = new ArrayList<Skeleton>();
+	    	
 	    	while(i.hasNext()) {
 	    		Entity m = i.next();
 	    		
@@ -142,6 +146,15 @@ public class GameLayer implements Layer {
 				case EXTRA_HEART:
 					if(m.getLocation().distance(heroLoc) < 30) {
 	    				((HeartExtra) m).pickup(this.hero);
+						i.remove();
+	    			}
+					break;
+				case ARROW:
+					Arrow a = (Arrow) m;
+					a.move();
+					
+					if(m.getLocation().distance(heroLoc) < 30) {
+	    				((Arrow) m).pickup(this.hero);
 						i.remove();
 	    			}
 					break;
@@ -158,8 +171,17 @@ public class GameLayer implements Layer {
 					break;
 				case DEMON:
 				case SKELETON:
-					if(m.getLocation().distance(heroLoc) < 150) {
-						// TODO: Skeleton code
+					if(m.getLocation().distance(heroLoc) < 110) {
+						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities, true);
+					} else if(m.getLocation().distance(heroLoc) < 200) {
+						Skeleton s = (Skeleton) m;
+						s.fireTick++;
+						
+						if(s.fireTick > 90) {
+							s.fireTick = 0;
+							shooting.add(s);
+							
+						}
 					} else {
 						((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
 		    		}
@@ -175,6 +197,10 @@ public class GameLayer implements Layer {
 	    		}
 	    	}
 	    	
+	    	for(Skeleton s : shooting) {
+	    		s.shoot(entities, this.hero.getLocation());
+	    	}
+	    	
 	    	if(this.hero.damageTick > 0) {
 	    		this.hero.damageTick -= 0.1;
 	    	} else {
@@ -186,6 +212,12 @@ public class GameLayer implements Layer {
 	    	} else {
 	    		this.hero.dmgTick = 0;
 	    	};
+	    	
+	    	this.swordRot += 5;
+	    	
+	    	if(this.swordRot > 60) {
+	    		this.swordRot = -60;
+	    	}
     	} else if(this.fade <= 0.4) {
     		this.fade += 0.03;
     	}
@@ -213,6 +245,9 @@ public class GameLayer implements Layer {
 			case SKELETON:
 				gfx.drawImage(skeletonImg, e.getLocation().getX() - (skeletonImg.getWidth() / 2), e.getLocation().getY() - (skeletonImg.getHeight() / 2), 30, 32);
 				break;
+			case ARROW:
+				RenderUtils.drawRotatedImage(gfx, this.arrow, ((Arrow) e).getAngle(), e.getLocation().getX() - (arrow.getWidth() / 2), e.getLocation().getY() - (arrow.getHeight() / 2), 14 * 0.75, 38 * 0.75);
+				break;
 			case MUMMY:
 				gfx.drawImage(mummyImg, e.getLocation().getX() - (mummyImg.getWidth() / 2), e.getLocation().getY() - (mummyImg.getHeight() / 2), 30, 32);
 				break;
@@ -225,7 +260,9 @@ public class GameLayer implements Layer {
 		}
 		
 		gfx.drawImage(sprite, this.hero.getLocation().getX() - (heroImg.getWidth() / 2), this.hero.getLocation().getY() - (sprite.getHeight() / 2), 30, 30);
-
+		
+		RenderUtils.drawRotatedImage(gfx, sword, this.swordRot, 100 - (sword.getWidth() / 2), 100 - (sword.getHeight() / 2), 13 * 2, 25 * 2);
+		
 		/* HUD */
 		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);
 		gfx.setFill(Color.YELLOW);

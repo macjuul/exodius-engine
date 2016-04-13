@@ -55,8 +55,12 @@ public abstract class LivingEntity extends Entity {
 			this.health = this.maxHealth;
 		}
 	}
-
+	
 	public void moveTo(Rectangle field, Location l, ArrayList<Entity> entities) {
+		moveTo(field, l, entities, false);
+	}
+
+	public void moveTo(Rectangle field, Location l, ArrayList<Entity> entities, boolean flip) {
 		double toLocX = getLocation().getX() - l.getX();
 		double toLocY = getLocation().getY() - l.getY();
 
@@ -64,8 +68,13 @@ public abstract class LivingEntity extends Entity {
 		toLocX = toLocX / toPlayerLength;
 		toLocY = toLocY / toPlayerLength;
 
-		acceleration_X -= toLocX * movementSpeed;
-		acceleration_Y -= toLocY * movementSpeed;
+		if(flip) {
+			acceleration_X += toLocX * movementSpeed;
+			acceleration_Y += toLocY * movementSpeed;
+		} else {
+			acceleration_X -= toLocX * movementSpeed;
+			acceleration_Y -= toLocY * movementSpeed;
+		}
 
 		if(this.acceleration_X > this.maxAcceleration) {
 			this.acceleration_X = this.maxAcceleration;

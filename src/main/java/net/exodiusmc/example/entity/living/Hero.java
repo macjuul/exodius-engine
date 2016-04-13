@@ -29,7 +29,7 @@ public class Hero extends LivingEntity {
 		this.facingCache = Direction.DOWN;
 		this.keys = MovementKeys.ARROWS;
 		
-		setMaxHealth(500, true);
+		setMaxHealth(10, true);
 		setMovementSpeed(0.6);
 	}
 	
