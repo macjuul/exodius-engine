@@ -5,6 +5,8 @@ import javafx.scene.Cursor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
@@ -14,13 +16,15 @@ public class DeathLayer implements Layer {
 	private Image pane;
 	private Image paneGreen;
 	private Image paneRed;
+	private Font scoreFont;
+	private int score;
 	
 	private byte paneType;
 	
 	private EventHandler<MouseEvent> mouseMoveEvent;
 	private EventHandler<MouseEvent> mouseClickEvent;
 	
-	public DeathLayer() {
+	public DeathLayer(int score) {
 		/*
 		 * 159.0 319.0
 	     * 240.0 357.0
@@ -31,6 +35,8 @@ public class DeathLayer implements Layer {
 		this.pane = FileUtils.LoadImage("menu.png");
 		this.paneGreen = FileUtils.LoadImage("menu_green.png");
 		this.paneRed = FileUtils.LoadImage("menu_red.png");
+		this.scoreFont = new Font("Arial", 20);
+		this.score = score;
 		
 		this.paneType = 0;
 		
@@ -101,6 +107,21 @@ public class DeathLayer implements Layer {
 			Main.window.getScene().setCursor(Cursor.HAND);
 			break;
 		}
+		;
+		gfx.setStroke(Color.rgb(40, 40, 40));
+		gfx.setFill(Color.rgb(40, 40, 40));
+		gfx.setLineWidth(1);
+		
+		// Score
+		gfx.setFont(this.scoreFont);
+		int scoreSpacing = 395;
+		int highScoreSpacing = 440;
+		
+		gfx.fillText("" + this.score, scoreSpacing, 337);
+		gfx.strokeText("" + this.score, scoreSpacing, 337);
+		
+		gfx.fillText("" + (this.score + 1), highScoreSpacing, 368);
+		gfx.strokeText("" + (this.score + 1), highScoreSpacing, 368);
 		
 		gfx.setGlobalAlpha(1);
 	}

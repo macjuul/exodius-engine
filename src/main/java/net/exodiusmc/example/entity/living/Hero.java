@@ -42,7 +42,7 @@ public class Hero extends LivingEntity {
 	}
 	
 	public void death() {
-		Main.engine.getLayerManager().add(new DeathLayer());
+		Main.engine.getLayerManager().add(new DeathLayer(Main.getMain().score));
 	}
 	
 	public void move(Direction d, Rectangle field) {

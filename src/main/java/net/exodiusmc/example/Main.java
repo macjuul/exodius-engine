@@ -14,6 +14,8 @@ public class Main extends ExodiusEngine {
     private static Main main;
     private static InputManager input;
     
+    public int score;
+    
     public static void main(String[] args) {
         launch(args);
     }
