@@ -31,7 +31,7 @@ public class Hero extends LivingEntity {
 		this.swordFacing = SwordDirection.DOWN;
 		this.keys = MovementKeys.ARROWS;
 		
-		setMaxHealth(1000, true);
+		setMaxHealth(10, true);
 		setMovementSpeed(0.6);
 	}
 	

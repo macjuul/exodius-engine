@@ -8,6 +8,7 @@ import java.util.Iterator;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import net.exodiusmc.engine.InputManager;
@@ -59,6 +60,12 @@ public class GameLayer implements Layer {
     private boolean swordActive;
     private double swordFade = 1;
     private int swordDir;
+    private AudioClip swoosh;
+    private AudioClip monsterDeath;
+    private AudioClip skeletonDeath;
+    private AudioClip bow;
+    private AudioClip arrow_hit;
+    private AudioClip hit;
     
     public ArrayList<Entity> entities;
     
@@ -84,6 +91,12 @@ public class GameLayer implements Layer {
         this.scoreFont = (new Font("Arial", 25));
         this.entities = new ArrayList<Entity>();
         this.fade = 0;
+        this.swoosh = new AudioClip(FileUtils.ResolveResource("swoop.mp3").toString());
+        this.monsterDeath = new AudioClip(FileUtils.ResolveResource("monster_death.mp3").toString());
+        this.skeletonDeath = new AudioClip(FileUtils.ResolveResource("skeleton_death.mp3").toString());
+        this.bow = new AudioClip(FileUtils.ResolveResource("skeleton_shoot.mp3").toString());
+        this.arrow_hit = new AudioClip(FileUtils.ResolveResource("arrow_hit.mp3").toString());
+        this.hit = new AudioClip(FileUtils.ResolveResource("hit.mp3").toString());
         
         Location l = playField.getLocationRelative(0.5, 0.5);
         
@@ -119,6 +132,10 @@ public class GameLayer implements Layer {
 	    		this.entities.add(new Monster(this.playField));
 	    	}
 	    	
+	    	if(frame == 0 || frame % 200 == 0) {
+	    		this.entities.add(new Skeleton(this.playField));
+	    	}
+	    	
 	    	if(frame % 90 == 0) {
 	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.entities.add(new HeartPower(this.playField));
 	    	}
@@ -151,10 +168,26 @@ public class GameLayer implements Layer {
 				&& m instanceof LivingEntity
 				&& ((this.hero.getLocation().getAngle(m.getLocation()) < angle - 10
 				&& angle + 10 < this.hero.getLocation().getAngle(m.getLocation()) + 90
-				&& this.hero.getLocation().distance(m.getLocation()) < 80)
+				&& this.hero.getLocation().distance(m.getLocation()) < 65)
 				|| this.hero.getLocation().distance(m.getLocation()) < 37)) {
 	    			((LivingEntity) m).damage(1);
+	    			Main.getMain().score++;
 	    			i.remove();
+	    			
+	    			switch(m.getEntityType()) {
+					case DEMON:
+						break;
+					case MONSTER:
+						this.monsterDeath.play();
+						break;
+					case MUMMY:
+						break;
+					case SKELETON:
+						this.skeletonDeath.play();
+						break;
+					default:
+						break;
+	    			}
 	    		} else {
 		    		switch(m.getEntityType()) {
 					case EXTRA_HEART:
@@ -170,14 +203,16 @@ public class GameLayer implements Layer {
 						if(m.getLocation().distance(heroLoc) < 30) {
 		    				((Arrow) m).pickup(this.hero);
 							i.remove();
+							this.arrow_hit.play();
 		    			}
 						break;
 					case MUMMY:
 					case MONSTER:
-						if(m.getLocation().distance(heroLoc) < 40) {
+						if(m.getLocation().distance(heroLoc) < 30) {
 							if(this.hero.dmgTick == 0) {
 								this.hero.damageHero(1);
 								((LivingEntity) m).damage(1);
+								this.hit.play();
 							}
 						} else {
 							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
@@ -186,7 +221,11 @@ public class GameLayer implements Layer {
 					case DEMON:
 					case SKELETON:
 						if(m.getLocation().distance(heroLoc) < 110) {
-							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities, true);
+							LivingEntity s = ((LivingEntity) m);
+							double speed = s.getMovementSpeed();
+							s.setMovementSpeed(0.1);
+							s.moveTo(this.playField, this.hero.getLocation(), this.entities, true);
+							s.setMovementSpeed(speed);
 						} else if(m.getLocation().distance(heroLoc) < 200) {
 							Skeleton s = (Skeleton) m;
 							s.fireTick++;
@@ -194,7 +233,7 @@ public class GameLayer implements Layer {
 							if(s.fireTick > 90) {
 								s.fireTick = 0;
 								shooting.add(s);
-								
+								this.bow.play();
 							}
 						} else {
 							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
@@ -228,14 +267,17 @@ public class GameLayer implements Layer {
 	    		this.swordActive = true;
 	    		this.swordFade = 0;
 	    		this.swordDir = this.hero.swordFacing.getBaseRotation();
+	    		this.swoosh.play();
 	    	}
 	    	
 	    	if(this.hero.attackTick > 0) {
-	    		this.hero.attackTick -= 0.1;
+	    		this.hero.attackTick -= 0.5;
+	    	} else {
+	    		this.hero.attackTick = 0;
 	    	}
 	    	
 	    	if(this.swordActive) {
-		    	this.swordRot += 5;
+		    	this.swordRot += 6;
 		    	
 		    	if(this.swordRot < 20) {
 		    		this.swordFade = this.swordRot / 20;
@@ -299,7 +341,7 @@ public class GameLayer implements Layer {
 			rot += this.swordDir;
 			
 			gfx.setGlobalAlpha((double) this.swordFade);
-			RenderUtils.drawRotatedImage(gfx, sword, rot, this.hero.getLocation().getX() - ((sword.getWidth() * 0.85) / 2), this.hero.getLocation().getY() - ((sword.getHeight() * 0.85) / 2), 26 * 0.85, 115 * 0.85);
+			RenderUtils.drawRotatedImage(gfx, sword, rot, this.hero.getLocation().getX() - ((sword.getWidth() * 0.9) / 2), this.hero.getLocation().getY() - ((sword.getHeight() * 0.9) / 2), 26 * 0.9, 115 * 0.9);
 			gfx.setGlobalAlpha(1);
 		}
 		
