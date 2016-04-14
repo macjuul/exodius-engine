@@ -7,6 +7,7 @@ import net.exodiusmc.engine.InputManager;
 import net.exodiusmc.engine.Runtime;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.layers.GameLayer;
+import net.exodiusmc.example.layers.MainMenuLayer;
 
 public class Main extends ExodiusEngine {
     public static Stage window;
@@ -40,8 +41,10 @@ public class Main extends ExodiusEngine {
 		window.show();
 		
 		GameLayer game = new GameLayer();
+		MainMenuLayer menu = new MainMenuLayer();
 		
 		getLayerManager().add(game);
+		getLayerManager().add(menu);
 	}
 
 	@Override
