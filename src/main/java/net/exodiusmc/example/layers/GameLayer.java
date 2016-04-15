@@ -49,6 +49,8 @@ public class GameLayer implements Layer {
     private Hero hero;
     private SpriteAnimation heroSprite;
     private SpriteAnimation monsterSprite;
+    private SpriteAnimation skeletonSprite;
+    private Image normalSkeletonSprite;
     private Rectangle playField;
     private InputManager input;
     private boolean updateSprite;
@@ -73,7 +75,8 @@ public class GameLayer implements Layer {
     	this.groundImg = FileUtils.LoadImage("ground.png");
     	this.heroImg = FileUtils.LoadImage("hero_anim.png");
     	this.monsterImg = FileUtils.LoadImage("monster_anim.png");
-    	this.skeletonImg = FileUtils.LoadImage("skeleton.png");
+    	this.skeletonImg = FileUtils.LoadImage("skeleton_anim.png");
+    	this.normalSkeletonSprite = FileUtils.LoadImage("skeleton.png");
     	this.mummyImg = FileUtils.LoadImage("mummy.png");
         this.demonImg = FileUtils.LoadImage("demon.png");
         this.heartEmpty = FileUtils.LoadImage("heart_empty.png");
@@ -86,6 +89,7 @@ public class GameLayer implements Layer {
         this.input = Main.getInputMngr();
         this.heroSprite = new SpriteAnimation(heroImg, 5);
         this.monsterSprite = new SpriteAnimation(monsterImg, 5);
+        this.skeletonSprite = new SpriteAnimation(skeletonImg, 3);
         this.updateSprite = false;
         this.monsterHead = FileUtils.LoadImage("head.png");
         this.scoreFont = (new Font("Arial", 25));
@@ -106,6 +110,7 @@ public class GameLayer implements Layer {
         
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
         this.monsterSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
+        this.skeletonSprite.setSpriteOrder(new int[]{0, 1, 2, 1});
     }
     
     @Override
@@ -220,23 +225,27 @@ public class GameLayer implements Layer {
 						break;
 					case DEMON:
 					case SKELETON:
-						if(m.getLocation().distance(heroLoc) < 110) {
-							LivingEntity s = ((LivingEntity) m);
+						if(m.getLocation().distance(heroLoc) < 100) {
+							Skeleton s = ((Skeleton) m);
 							double speed = s.getMovementSpeed();
 							s.setMovementSpeed(0.1);
 							s.moveTo(this.playField, this.hero.getLocation(), this.entities, true);
 							s.setMovementSpeed(speed);
-						} else if(m.getLocation().distance(heroLoc) < 200) {
+							s.moveState = 1;
+						} else if(m.getLocation().distance(heroLoc) < 280) {
 							Skeleton s = (Skeleton) m;
 							s.fireTick++;
 							
-							if(s.fireTick > 90) {
+							if(s.fireTick > 85) {
 								s.fireTick = 0;
 								shooting.add(s);
 								this.bow.play();
 							}
+							s.moveState = 0;
 						} else {
-							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
+							Skeleton s = ((Skeleton) m);
+							s.moveTo(this.playField, this.hero.getLocation(), this.entities);
+							s.moveState = 2;
 			    		}
 						break;
 					case POWER_HEART:
@@ -301,6 +310,7 @@ public class GameLayer implements Layer {
 	public void render(GraphicsContext gfx) {
 		Image sprite = heroSprite.nextFrame(this.updateSprite);
 		Image monSprite = monsterSprite.nextFrame(this.updateMonsterSprite);
+		Image skelSprite = skeletonSprite.nextFrame(this.updateMonsterSprite);
 		sprite = FileUtils.colorizeImage(sprite, Color.RED, this.hero.dmgTick);
 		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
@@ -317,7 +327,8 @@ public class GameLayer implements Layer {
 				gfx.drawImage(this.heartFull, e.getLocation().getX() - (this.heartFull.getWidth() / 2), e.getLocation().getY() - (this.heartFull.getHeight() / 2), this.heartFull.getWidth() * 0.75, this.heartFull.getHeight() * 0.75);
 				break;
 			case SKELETON:
-				gfx.drawImage(skeletonImg, e.getLocation().getX() - (skeletonImg.getWidth() / 2), e.getLocation().getY() - (skeletonImg.getHeight() / 2), 30, 32);
+				Skeleton s = (Skeleton) e;
+				gfx.drawImage(s.moveState > 0 ? skelSprite : normalSkeletonSprite, e.getLocation().getX() - (skelSprite.getWidth() / 2), e.getLocation().getY() - (skelSprite.getHeight() / 2), 30, 32);
 				break;
 			case ARROW:
 				RenderUtils.drawRotatedImage(gfx, this.arrow, ((Arrow) e).getAngle(), e.getLocation().getX() - (arrow.getWidth() / 2), e.getLocation().getY() - (arrow.getHeight() / 2), 14 * 0.75, 38 * 0.75);
@@ -374,7 +385,7 @@ public class GameLayer implements Layer {
 
 	@Override
 	public boolean updateOnCover() {
-		return true;
+		return false;
 	}
 	
 	private boolean handleMovement(KeyCode[] kl, Direction d) {

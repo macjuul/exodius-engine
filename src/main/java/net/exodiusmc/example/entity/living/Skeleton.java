@@ -13,6 +13,7 @@ import net.exodiusmc.example.entity.fixed.Arrow;
 
 public class Skeleton extends LivingEntity {
 	public int fireTick;
+	public byte moveState;
 
 	public Skeleton(Rectangle playField) {
 		super(Util.RandomSpawnLocation(playField), EntityType.SKELETON);
