@@ -10,6 +10,7 @@ import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example.Main;
 
+@Deprecated
 public class MainMenuLayer implements Layer {
 	private double opacity;
 	private Image logo;
@@ -25,7 +26,6 @@ public class MainMenuLayer implements Layer {
 	private EventHandler<MouseEvent> mouseMoveEvent;
 	private EventHandler<MouseEvent> mouseClickEvent;
 
-	@SuppressWarnings("restriction")
 	public MainMenuLayer() {
 		this.opacity = 0.675;
 		this.logo = FileUtils.LoadImage("logo.png");
