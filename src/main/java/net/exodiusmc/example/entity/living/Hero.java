@@ -17,7 +17,6 @@ import net.exodiusmc.example.layers.DeathLayer;
 public class Hero extends LivingEntity {
 	private SpriteAnimation sprite;
 	private HeroType type;
-	private MovementKeys keys;
 	
 	public Direction facing;
 	public SwordDirection swordFacing;
@@ -29,7 +28,6 @@ public class Hero extends LivingEntity {
 		
 		this.facing = Direction.DOWN;
 		this.swordFacing = SwordDirection.DOWN;
-		this.keys = MovementKeys.ARROWS;
 		
 		setMaxHealth(10, true);
 		setMovementSpeed(0.6);
@@ -92,6 +90,7 @@ public class Hero extends LivingEntity {
 		if(this.getHealth() <= 0) {
 			this.setHealth(0);
 			death();
+			Main.getMain().score = 0;
 		}
 	}
 
