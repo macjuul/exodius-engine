@@ -28,6 +28,7 @@ import net.exodiusmc.example.entity.LivingEntity;
 import net.exodiusmc.example.entity.fixed.Arrow;
 import net.exodiusmc.example.entity.fixed.HeartExtra;
 import net.exodiusmc.example.entity.fixed.HeartPower;
+import net.exodiusmc.example.entity.living.Demon;
 import net.exodiusmc.example.entity.living.Hero;
 import net.exodiusmc.example.entity.living.Monster;
 import net.exodiusmc.example.entity.living.Skeleton;
@@ -141,6 +142,10 @@ public class GameLayer implements Layer {
 	    		this.entities.add(new Skeleton(this.playField));
 	    	}
 	    	
+	    	if(frame == 0 || frame % 300 == 0) {
+	    		this.entities.add(new Demon(this.playField));
+	    	}
+	    	
 	    	if(frame % 90 == 0) {
 	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.entities.add(new HeartPower(this.playField));
 	    	}
@@ -181,6 +186,7 @@ public class GameLayer implements Layer {
 	    			
 	    			switch(m.getEntityType()) {
 					case DEMON:
+						
 						break;
 					case MONSTER:
 						this.monsterDeath.play();
@@ -212,6 +218,7 @@ public class GameLayer implements Layer {
 		    			}
 						break;
 					case MUMMY:
+					case DEMON:
 					case MONSTER:
 						if(m.getLocation().distance(heroLoc) < 30) {
 							if(this.hero.dmgTick == 0) {
@@ -223,7 +230,6 @@ public class GameLayer implements Layer {
 							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
 			    		}
 						break;
-					case DEMON:
 					case SKELETON:
 						if(m.getLocation().distance(heroLoc) < 100) {
 							Skeleton s = ((Skeleton) m);

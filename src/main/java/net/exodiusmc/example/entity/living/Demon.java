@@ -12,7 +12,7 @@ public class Demon extends LivingEntity {
 		super(Util.RandomSpawnLocation(playField), EntityType.DEMON);
 
 		setMaxHealth(1, true);
-		setMovementSpeed(CoreUtils.randomDoubleInRange(0.2, 0.4));
+		setMovementSpeed(CoreUtils.randomDoubleInRange(0.1, 0.2));
 	}
 
 	@Override
