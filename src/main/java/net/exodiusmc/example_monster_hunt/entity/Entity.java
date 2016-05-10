@@ -1,4 +1,4 @@
-package net.exodiusmc.example.entity;
+package net.exodiusmc.example_monster_hunt.entity;
 
 import net.exodiusmc.engine.Location;
 

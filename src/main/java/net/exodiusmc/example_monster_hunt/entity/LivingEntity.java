@@ -1,10 +1,10 @@
-package net.exodiusmc.example.entity;
+package net.exodiusmc.example_monster_hunt.entity;
 
 import java.util.ArrayList;
 
 import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.shape.Rectangle;
-import net.exodiusmc.example.entity.living.Hero;
+import net.exodiusmc.example_monster_hunt.entity.living.Hero;
 
 public abstract class LivingEntity extends Entity {
 	private int health;
@@ -14,6 +14,9 @@ public abstract class LivingEntity extends Entity {
 	private double friction = 0.8;
 	protected double acceleration_X = 0;
 	protected double acceleration_Y = 0;
+	
+	public Integer hpBarTick = 0;
+	public int damageId = 0;
 
 	public LivingEntity(Location pos, EntityType type) {
 		super(pos, type);
@@ -42,12 +45,15 @@ public abstract class LivingEntity extends Entity {
 		}
 	}
 
-	public void damage(int a) {
+	public boolean damage(int a) {
 		this.health -= a;
-		if (this.health <= 0) {
+		this.hpBarTick = 0;
+		if(this.health <= 0) {
 			this.health = 0;
 			death();
+			return true;
 		}
+		return false;
 	}
 
 	public void heal(int a) {

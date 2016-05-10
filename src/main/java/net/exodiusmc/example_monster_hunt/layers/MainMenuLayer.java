@@ -1,4 +1,4 @@
-package net.exodiusmc.example.layers;
+package net.exodiusmc.example_monster_hunt.layers;
 
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -8,7 +8,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.util.FileUtils;
-import net.exodiusmc.example.Main;
+import net.exodiusmc.example_monster_hunt.Main;
 
 @Deprecated
 public class MainMenuLayer implements Layer {

@@ -1,10 +1,10 @@
-package net.exodiusmc.example.entity.fixed;
+package net.exodiusmc.example_monster_hunt.entity.fixed;
 
 import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
-import net.exodiusmc.example.entity.EntityType;
-import net.exodiusmc.example.entity.StaticEntity;
-import net.exodiusmc.example.entity.living.Hero;
+import net.exodiusmc.example_monster_hunt.entity.EntityType;
+import net.exodiusmc.example_monster_hunt.entity.StaticEntity;
+import net.exodiusmc.example_monster_hunt.entity.living.Hero;
 
 public abstract class Heart extends StaticEntity {
 

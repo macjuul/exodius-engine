@@ -1,8 +1,8 @@
-package net.exodiusmc.example.entity.fixed;
+package net.exodiusmc.example_monster_hunt.entity.fixed;
 
 import net.exodiusmc.engine.shape.Rectangle;
-import net.exodiusmc.example.entity.EntityType;
-import net.exodiusmc.example.entity.living.Hero;
+import net.exodiusmc.example_monster_hunt.entity.EntityType;
+import net.exodiusmc.example_monster_hunt.entity.living.Hero;
 
 public class HeartExtra extends Heart {
 

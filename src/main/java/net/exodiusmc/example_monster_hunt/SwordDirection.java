@@ -1,4 +1,4 @@
-package net.exodiusmc.example;
+package net.exodiusmc.example_monster_hunt;
 
 public enum SwordDirection {
 	UP(0),

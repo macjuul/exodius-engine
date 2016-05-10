@@ -1,4 +1,4 @@
-package net.exodiusmc.example.layers;
+package net.exodiusmc.example_monster_hunt.layers;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,18 +20,18 @@ import net.exodiusmc.engine.shape.Rectangle;
 import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.engine.util.RenderUtils;
-import net.exodiusmc.example.Main;
-import net.exodiusmc.example.entity.Entity;
-import net.exodiusmc.example.entity.EntityType;
-import net.exodiusmc.example.entity.HeroType;
-import net.exodiusmc.example.entity.LivingEntity;
-import net.exodiusmc.example.entity.fixed.Arrow;
-import net.exodiusmc.example.entity.fixed.HeartExtra;
-import net.exodiusmc.example.entity.fixed.HeartPower;
-import net.exodiusmc.example.entity.living.Demon;
-import net.exodiusmc.example.entity.living.Hero;
-import net.exodiusmc.example.entity.living.Monster;
-import net.exodiusmc.example.entity.living.Skeleton;
+import net.exodiusmc.example_monster_hunt.Main;
+import net.exodiusmc.example_monster_hunt.entity.Entity;
+import net.exodiusmc.example_monster_hunt.entity.EntityType;
+import net.exodiusmc.example_monster_hunt.entity.HeroType;
+import net.exodiusmc.example_monster_hunt.entity.LivingEntity;
+import net.exodiusmc.example_monster_hunt.entity.fixed.Arrow;
+import net.exodiusmc.example_monster_hunt.entity.fixed.HeartExtra;
+import net.exodiusmc.example_monster_hunt.entity.fixed.HeartPower;
+import net.exodiusmc.example_monster_hunt.entity.living.Demon;
+import net.exodiusmc.example_monster_hunt.entity.living.Hero;
+import net.exodiusmc.example_monster_hunt.entity.living.Monster;
+import net.exodiusmc.example_monster_hunt.entity.living.Skeleton;
 
 public class GameLayer implements Layer {
 	private Image groundImg;
@@ -48,9 +48,11 @@ public class GameLayer implements Layer {
     private Image trees;
     private Image arrow;
     private Hero hero;
+    private int swordId;
     private SpriteAnimation heroSprite;
     private SpriteAnimation monsterSprite;
     private SpriteAnimation skeletonSprite;
+    private SpriteAnimation demonSprite;
     private Image normalSkeletonSprite;
     private Rectangle playField;
     private InputManager input;
@@ -79,7 +81,7 @@ public class GameLayer implements Layer {
     	this.skeletonImg = FileUtils.LoadImage("skeleton_anim.png");
     	this.normalSkeletonSprite = FileUtils.LoadImage("skeleton.png");
     	this.mummyImg = FileUtils.LoadImage("mummy.png");
-        this.demonImg = FileUtils.LoadImage("demon.png");
+        this.demonImg = FileUtils.LoadImage("demon_anim.png");
         this.heartEmpty = FileUtils.LoadImage("heart_empty.png");
         this.heartFull = FileUtils.LoadImage("heart_full.png");
         this.heartExtra = FileUtils.LoadImage("heart_plus.png");
@@ -91,6 +93,8 @@ public class GameLayer implements Layer {
         this.heroSprite = new SpriteAnimation(heroImg, 5);
         this.monsterSprite = new SpriteAnimation(monsterImg, 5);
         this.skeletonSprite = new SpriteAnimation(skeletonImg, 3);
+        this.demonSprite = new SpriteAnimation(demonImg, 5);
+        this.swordId = 0;
         this.updateSprite = false;
         this.monsterHead = FileUtils.LoadImage("head.png");
         this.scoreFont = (new Font("Arial", 25));
@@ -112,6 +116,7 @@ public class GameLayer implements Layer {
         this.heroSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
         this.monsterSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
         this.skeletonSprite.setSpriteOrder(new int[]{0, 1, 2, 1});
+        this.demonSprite.setSpriteOrder(new int[]{0, 1, 2, 3, 4, 3, 2, 1});
     }
     
     @Override
@@ -136,10 +141,6 @@ public class GameLayer implements Layer {
 	    	
 	    	if(frame == 0 || frame % 100 == 0) {
 	    		this.entities.add(new Monster(this.playField));
-	    	}
-	    	
-	    	if(frame == 0 || frame % 200 == 0) {
-	    		this.entities.add(new Skeleton(this.playField));
 	    	}
 	    	
 	    	if(frame == 0 || frame % 300 == 0) {
@@ -170,34 +171,43 @@ public class GameLayer implements Layer {
 	    		Entity m = i.next();
 	    		
 	    		if(m instanceof LivingEntity) {
-	    			((LivingEntity) m).handleMovement(this.playField, this.entities);
+	    			LivingEntity le = (LivingEntity) m;
+	    			
+	    			le.handleMovement(this.playField, this.entities);
+	    			le.hpBarTick++;
 	    		}
 				
 	    		if(this.swordActive
 				&& m.getEntityType() != EntityType.HERO
 				&& m instanceof LivingEntity
+				&& !Integer.valueOf(this.swordId).equals(((LivingEntity) m).damageId)
 				&& ((this.hero.getLocation().getAngle(m.getLocation()) < angle - 10
 				&& angle + 10 < this.hero.getLocation().getAngle(m.getLocation()) + 90
-				&& this.hero.getLocation().distance(m.getLocation()) < 65)
+				&& this.hero.getLocation().distance(m.getLocation()) < 75)
 				|| this.hero.getLocation().distance(m.getLocation()) < 37)) {
-	    			((LivingEntity) m).damage(1);
-	    			Main.getMain().score++;
-	    			i.remove();
+	    			LivingEntity le = (LivingEntity) m;
 	    			
-	    			switch(m.getEntityType()) {
-					case DEMON:
-						
-						break;
-					case MONSTER:
-						this.monsterDeath.play();
-						break;
-					case MUMMY:
-						break;
-					case SKELETON:
-						this.skeletonDeath.play();
-						break;
-					default:
-						break;
+	    			le.damageId = this.swordId;
+	    			
+	    			if(((LivingEntity) m).damage(1)) {
+		    			Main.getMain().score++;
+		    			i.remove();
+		    			
+		    			switch(m.getEntityType()) {
+						case DEMON:
+							
+							break;
+						case MONSTER:
+							this.monsterDeath.play();
+							break;
+						case MUMMY:
+							break;
+						case SKELETON:
+							this.skeletonDeath.play();
+							break;
+						default:
+							break;
+		    			}
 	    			}
 	    		} else {
 		    		switch(m.getEntityType()) {
@@ -223,7 +233,6 @@ public class GameLayer implements Layer {
 						if(m.getLocation().distance(heroLoc) < 30) {
 							if(this.hero.dmgTick == 0) {
 								this.hero.damageHero(1);
-								((LivingEntity) m).damage(1);
 								this.hit.play();
 							}
 						} else {
@@ -280,6 +289,7 @@ public class GameLayer implements Layer {
 	    		this.hero.attackTick = 40;
 	    		this.swordRot = 0;
 	    		this.swordActive = true;
+	    		this.swordId = CoreUtils.randomIntInRange(0, 300);
 	    		this.swordFade = 0;
 	    		this.swordDir = this.hero.swordFacing.getBaseRotation();
 	    		this.swoosh.play();
@@ -317,6 +327,7 @@ public class GameLayer implements Layer {
 		Image sprite = heroSprite.nextFrame(this.updateSprite);
 		Image monSprite = monsterSprite.nextFrame(this.updateMonsterSprite);
 		Image skelSprite = skeletonSprite.nextFrame(this.updateMonsterSprite);
+		Image demSprite = demonSprite.nextFrame(this.updateMonsterSprite);
 		sprite = FileUtils.colorizeImage(sprite, Color.RED, this.hero.dmgTick);
 		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
@@ -343,7 +354,7 @@ public class GameLayer implements Layer {
 				gfx.drawImage(mummyImg, e.getLocation().getX() - (mummyImg.getWidth() / 2), e.getLocation().getY() - (mummyImg.getHeight() / 2), 30, 32);
 				break;
 			case DEMON:
-				gfx.drawImage(demonImg, e.getLocation().getX() - (demonImg.getWidth() / 2), e.getLocation().getY() - (demonImg.getHeight() / 2), 30, 34);
+				gfx.drawImage(demSprite, e.getLocation().getX() - (demSprite.getWidth() / 2), e.getLocation().getY() - (demSprite.getHeight() / 2), 30, 34);
 				break;
 			default:
 				break;
@@ -362,6 +373,25 @@ public class GameLayer implements Layer {
 			gfx.setGlobalAlpha(1);
 		}
 		
+		/* Final */
+		gfx.drawImage(trees, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
+		
+		for(Entity e : this.entities) {
+			if(e instanceof LivingEntity && !(e instanceof Hero)) {
+				LivingEntity le = (LivingEntity) e;
+				
+				if(le.getHealth() == le.getMaxHealth() || le.hpBarTick > 200) continue;
+				
+				double hp = ((float) le.getHealth() / (float) le.getMaxHealth()) * 50;
+				
+				gfx.setFill(Color.rgb(72, 222, 22));
+				gfx.fillRect(e.getLocation().getX() - 25, e.getLocation().getY() - 30, 50, 5);
+				
+				gfx.setFill(Color.RED);
+				gfx.fillRect(e.getLocation().getX() - 25 + hp, e.getLocation().getY() - 30, 50 - hp, 5);
+			}
+		}
+		
 		/* HUD */
 		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);
 		gfx.setFill(Color.YELLOW);
@@ -377,9 +407,6 @@ public class GameLayer implements Layer {
 		for(int h = this.hero.getHealth(); h < this.hero.getMaxHealth(); h++) {
 			gfx.drawImage(this.heartEmpty, 42 + ((this.heartSize + 2) * h), 45, this.heartSize, this.heartSize);
 		}
-		
-		/* Final */
-		gfx.drawImage(trees, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
 		
 		if(this.fade > 0) {
 			gfx.setGlobalAlpha(this.fade);

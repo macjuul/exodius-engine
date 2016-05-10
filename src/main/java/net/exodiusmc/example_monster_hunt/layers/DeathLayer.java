@@ -1,4 +1,4 @@
-package net.exodiusmc.example.layers;
+package net.exodiusmc.example_monster_hunt.layers;
 
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.util.FileUtils;
-import net.exodiusmc.example.Main;
+import net.exodiusmc.example_monster_hunt.Main;
 
 public class DeathLayer implements Layer {
 	private double fade;

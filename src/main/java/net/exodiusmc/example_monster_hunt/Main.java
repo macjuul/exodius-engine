@@ -1,4 +1,4 @@
-package net.exodiusmc.example;
+package net.exodiusmc.example_monster_hunt;
 
 import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
@@ -6,7 +6,7 @@ import net.exodiusmc.engine.ExodiusEngine;
 import net.exodiusmc.engine.InputManager;
 import net.exodiusmc.engine.Runtime;
 import net.exodiusmc.engine.util.FileUtils;
-import net.exodiusmc.example.layers.GameLayer;
+import net.exodiusmc.example_monster_hunt.layers.GameLayer;
 
 public class Main extends ExodiusEngine {
     public static Stage window;
@@ -22,7 +22,7 @@ public class Main extends ExodiusEngine {
 
 	@Override
 	public void init(Stage window, Runtime run) {
-	    FileUtils.setResourceDirectory("net/exodiusmc/example/");
+	    FileUtils.setResourceDirectory("net/exodiusmc/example_monster_hunt/");
 	    setMainClass(this.getClass());
 	    Main.input = getInputManager();
 	    Main.main = this;
@@ -42,6 +42,8 @@ public class Main extends ExodiusEngine {
 		GameLayer game = new GameLayer();
 		
 		getLayerManager().add(game);
+		
+		
 	}
 
 	@Override

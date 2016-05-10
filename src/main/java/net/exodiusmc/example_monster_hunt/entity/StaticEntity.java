@@ -1,7 +1,7 @@
-package net.exodiusmc.example.entity;
+package net.exodiusmc.example_monster_hunt.entity;
 
 import net.exodiusmc.engine.Location;
-import net.exodiusmc.example.entity.living.Hero;
+import net.exodiusmc.example_monster_hunt.entity.living.Hero;
 
 public abstract class StaticEntity extends Entity {
 

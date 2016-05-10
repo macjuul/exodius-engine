@@ -1,18 +1,18 @@
-package net.exodiusmc.example.entity.living;
+package net.exodiusmc.example_monster_hunt.entity.living;
 
 import javafx.scene.input.KeyCode;
 import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.engine.shape.Rectangle;
+import net.exodiusmc.engine.util.CoreUtils;
 import net.exodiusmc.engine.util.FileUtils;
-import net.exodiusmc.example.Main;
-import net.exodiusmc.example.MovementKeys;
-import net.exodiusmc.example.SwordDirection;
-import net.exodiusmc.example.entity.EntityType;
-import net.exodiusmc.example.entity.HeroType;
-import net.exodiusmc.example.entity.LivingEntity;
-import net.exodiusmc.example.layers.DeathLayer;
+import net.exodiusmc.example_monster_hunt.Main;
+import net.exodiusmc.example_monster_hunt.SwordDirection;
+import net.exodiusmc.example_monster_hunt.entity.EntityType;
+import net.exodiusmc.example_monster_hunt.entity.HeroType;
+import net.exodiusmc.example_monster_hunt.entity.LivingEntity;
+import net.exodiusmc.example_monster_hunt.layers.DeathLayer;
 
 public class Hero extends LivingEntity {
 	private SpriteAnimation sprite;
@@ -42,7 +42,9 @@ public class Hero extends LivingEntity {
 	}
 	
 	public void death() {
-		Main.engine.getLayerManager().add(new DeathLayer(Main.getMain().score));
+		CoreUtils.setTimeout(100L, () -> {
+			Main.engine.getLayerManager().add(new DeathLayer(Main.getMain().score));
+		});
 	}
 	
 	public void move(Direction d, Rectangle field) {
@@ -86,7 +88,8 @@ public class Hero extends LivingEntity {
 	
 	public void damageHero(int a) {
 		this.setHealth(this.getHealth() - a);
-		this.dmgTick = 1;
+		this.dmgTick = 3;
+		this.hpBarTick = 0;
 		if(this.getHealth() <= 0) {
 			this.setHealth(0);
 			death();
