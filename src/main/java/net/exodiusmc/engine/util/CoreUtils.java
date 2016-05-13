@@ -1,5 +1,6 @@
 package net.exodiusmc.engine.util;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,6 +26,11 @@ public class CoreUtils {
     
     public static double randomDoubleInRange(double min, double max) {
     	return min + (max - min) * new Random().nextDouble();
+    }
+    
+    public static Object arrayRand(ArrayList<?> array) {
+        int rnd = new Random().nextInt(array.size());
+        return array.get(rnd);
     }
     
 }
