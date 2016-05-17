@@ -28,6 +28,11 @@ public class CoreUtils {
     	return min + (max - min) * new Random().nextDouble();
     }
     
+    public static Object arrayRand(Object[] array) {
+        int rnd = new Random().nextInt(array.length);
+        return array[rnd];
+    }
+    
     public static Object arrayRand(ArrayList<?> array) {
         int rnd = new Random().nextInt(array.size());
         return array.get(rnd);

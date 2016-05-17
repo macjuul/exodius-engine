@@ -20,6 +20,10 @@ public class Rectangle {
 		updateSizing();
 	}
 	
+	public Rectangle(Location min, double width, double height) {
+		this(min, new Location(min.getX() + width, min.getY() + height));
+	}
+	
 	public double getWidth() {
 		return width;
 	}
@@ -96,5 +100,25 @@ public class Rectangle {
 			throw new IllegalArgumentException("the given arguments must be beteen 0.0 and 1.0");
 		}
 		return new Location(this.min.getX() + this.width * xp, this.min.getY() + this.height * yp);
+	}
+	
+	public void moveWithTopLeft(Location newMin) {
+		this.min = newMin;
+		this.max.setX(newMin.getX() + width);
+		this.max.setY(newMin.getY() + height);
+	}
+	
+	public boolean intersects(Rectangle o) {
+		if(o.contains(this.getTopLeft())
+		|| o.contains(this.getTopRight())
+		|| o.contains(this.getBottomLeft())
+		|| o.contains(this.getBottomRight())
+		|| this.contains(o.getBottomRight())
+		|| this.contains(o.getBottomRight())
+		|| this.contains(o.getBottomRight())
+		|| this.contains(o.getBottomRight())) {
+			return true;
+		}
+		return false;
 	}
 }

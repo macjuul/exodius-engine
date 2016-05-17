@@ -125,6 +125,19 @@ public class Location {
 	}
 	
 	/*
+	 * Performs multiple scalar multiplication, multiplying X and Y with the provided units
+	 * 
+	 * @param amount The unit to multiply X with
+	 * @param amount The unit to multiply Y with
+	 * @return Location
+	 */
+	public Location multiply(double x, double y) {
+		this.x *= x;
+		this.y *= y;
+		return this;
+	}
+	
+	/*
 	 * Resets the location to a zero location
 	 * 
 	 * @return Location
@@ -133,6 +146,15 @@ public class Location {
 		this.x = 0;
 		this.y = 0;
 		return this;
+	}
+	
+	/*
+	 * Construct a new zero location
+	 * 
+	 * @return Location
+	 */
+	public static Location constructZero() {
+		return new Location(0, 0);
 	}
 	
 	/*
