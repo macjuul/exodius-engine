@@ -16,7 +16,7 @@ public class Arrow extends StaticEntity {
 
 	@Override
 	public void pickup(Hero h) {
-		h.damageHero(1);
+		// h.damageHero(1); FIXME: Change score to be stored on hero
 	}
 	
 	public void move() {

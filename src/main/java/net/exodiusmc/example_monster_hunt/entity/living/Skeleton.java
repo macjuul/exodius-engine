@@ -3,12 +3,12 @@ package net.exodiusmc.example_monster_hunt.entity.living;
 import java.util.List;
 
 import net.exodiusmc.engine.Location;
-import net.exodiusmc.engine.shape.Rectangle;
-import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.engine.util.GeneralUtils;
+import net.exodiusmc.engine.Rectangle;
+import net.exodiusmc.example_monster_hunt.Util;
 import net.exodiusmc.example_monster_hunt.entity.Entity;
 import net.exodiusmc.example_monster_hunt.entity.EntityType;
 import net.exodiusmc.example_monster_hunt.entity.LivingEntity;
-import net.exodiusmc.example_monster_hunt.entity.Util;
 import net.exodiusmc.example_monster_hunt.entity.fixed.Arrow;
 
 public class Skeleton extends LivingEntity {
@@ -19,7 +19,7 @@ public class Skeleton extends LivingEntity {
 		super(Util.RandomSpawnLocation(playField), EntityType.SKELETON);
 		
 		setMaxHealth(1, true);
-		setMovementSpeed(CoreUtils.randomDoubleInRange(0.35, 0.45));
+		setMovementSpeed(GeneralUtils.randomDoubleInRange(0.35, 0.45));
 		setMaxAcceleration(0.7);
 		setFriction(0.93);
 	}

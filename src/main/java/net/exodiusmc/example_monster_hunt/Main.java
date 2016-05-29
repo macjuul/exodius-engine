@@ -1,9 +1,7 @@
 package net.exodiusmc.example_monster_hunt;
 
-import javafx.scene.canvas.Canvas;
 import javafx.stage.Stage;
 import net.exodiusmc.engine.ExodiusEngine;
-import net.exodiusmc.engine.InputManager;
 import net.exodiusmc.engine.Runtime;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example_monster_hunt.layers.GameLayer;
@@ -11,10 +9,6 @@ import net.exodiusmc.example_monster_hunt.layers.GameLayer;
 public class Main extends ExodiusEngine {
     public static Stage window;
     public static ExodiusEngine engine;
-    private static Main main;
-    private static InputManager input;
-    
-    public int score;
     
     public static void main(String[] args) {
         launch(args);
@@ -23,11 +17,7 @@ public class Main extends ExodiusEngine {
 	@Override
 	public void init(Stage window, Runtime run) {
 	    FileUtils.setResourceDirectory("net/exodiusmc/example_monster_hunt/");
-	    setMainClass(this.getClass());
-	    Main.input = getInputManager();
-	    Main.main = this;
 	    Main.window = window;
-	    Main.engine = getEngine();
 	    
 	    window.setResizable(false);
 	    
@@ -48,16 +38,4 @@ public class Main extends ExodiusEngine {
 
 	@Override
 	public void update(double delta) {}
-	
-	public Canvas getCanvas() {
-		return this.getGraphics().getCanvas();
-	}
-	
-	public static Main getMain() {
-		return Main.main;
-	}
-	
-	public static InputManager getInputMngr() {
-		return Main.input;
-	}
 }

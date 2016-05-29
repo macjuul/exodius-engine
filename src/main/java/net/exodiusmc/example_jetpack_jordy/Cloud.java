@@ -2,7 +2,7 @@ package net.exodiusmc.example_jetpack_jordy;
 
 import javafx.scene.image.Image;
 import net.exodiusmc.engine.Location;
-import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.engine.util.GeneralUtils;
 
 public class Cloud {
 	private Image img;
@@ -15,10 +15,10 @@ public class Cloud {
 		this.img = img;
 		this.age = 0;
 		this.pos = pos;
-		this.rot = (short) CoreUtils.randomIntInRange(0, 360);
-		this.speed_mod = CoreUtils.randomDoubleInRange(1, 1.4);
+		this.rot = (short) GeneralUtils.randomIntInRange(0, 360);
+		this.speed_mod = GeneralUtils.randomDoubleInRange(1, 1.4);
 		
-		this.pos.add(CoreUtils.randomDoubleInRange(-10, 10), CoreUtils.randomDoubleInRange(-10, 10));
+		this.pos.add(GeneralUtils.randomDoubleInRange(-10, 10), GeneralUtils.randomDoubleInRange(-10, 10));
 	}
 	
 	public Cloud(Image img, Location pos) {

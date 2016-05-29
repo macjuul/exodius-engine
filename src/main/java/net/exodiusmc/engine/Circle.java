@@ -1,6 +1,4 @@
-package net.exodiusmc.engine.shape;
-
-import net.exodiusmc.engine.Location;
+package net.exodiusmc.engine;
 
 public class Circle {
 	private Location center;
@@ -28,5 +26,12 @@ public class Circle {
 
     public void setRadius(double radius) {
         this.radius = radius;
+    }
+    
+    public boolean contains(Location l) {
+    	if(center.distance(l) < this.radius) {
+    		return true;
+    	}
+    	return false;
     }
 }

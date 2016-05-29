@@ -3,6 +3,7 @@ package net.exodiusmc.example_jetpack_jordy;
 import javafx.stage.Stage;
 import net.exodiusmc.engine.ExodiusEngine;
 import net.exodiusmc.engine.InputManager;
+import net.exodiusmc.engine.Logger;
 import net.exodiusmc.engine.Runtime;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example_jetpack_jordy.layers.GameLayer;
@@ -16,6 +17,9 @@ public class Main extends ExodiusEngine {
 	@Override
 	public void init(Stage window, Runtime run) {
 		FileUtils.setResourceDirectory("net/exodiusmc/example_jetpack_jordy");
+		Logger.setLogDestination("C:/Users/julian/Desktop/exodius-engine.log");
+		
+		Logger.getLogger().info("Starting Jetpack Jordy, running Exodius Engine version " + getVersion());
 		
 		Main.input = getInputManager();
 		

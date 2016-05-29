@@ -14,12 +14,12 @@ import net.exodiusmc.engine.layers.LayerManager;
 public abstract class ExodiusEngine extends Application {
 	private int width = 700;
 	private int height = 550;
-	private GraphicsContext gfx;
+	protected GraphicsContext gfx;
 	private Runtime run;
 	private Stage window;
 	private LayerManager layerManager;
-	private InputManager inputManager;
-	private Class<?> m;
+	
+	private String version = "Alpha v1.0.0"; // Current version
 
 	public abstract void init(Stage window, Runtime run);
 	
@@ -29,7 +29,6 @@ public abstract class ExodiusEngine extends Application {
 	public void start(Stage stage) throws Exception {
 		this.window = stage;
 		this.layerManager = new LayerManager();
-		this.inputManager = new InputManager(stage);
 		
 		StackPane p = new StackPane();
 		Canvas cvs = new Canvas(this.width, this.height);
@@ -46,7 +45,7 @@ public abstract class ExodiusEngine extends Application {
 		    @Override
 			public void changed(ObservableValue<? extends Number> ov, Number widthOld, Number widthNew) {
 				window.setWidth(widthNew.doubleValue());
-				getGraphics().getCanvas().setWidth(widthNew.doubleValue());
+				gfx.getCanvas().setWidth(widthNew.doubleValue());
 			}
 		});
 		
@@ -54,7 +53,7 @@ public abstract class ExodiusEngine extends Application {
 		    @Override
 			public void changed(ObservableValue<? extends Number> ov, Number heightOld, Number heightNew) {
 				window.setHeight(heightNew.doubleValue());
-				getGraphics().getCanvas().setHeight(heightNew.doubleValue());
+				gfx.getCanvas().setHeight(heightNew.doubleValue());
 			}
 		});
 		
@@ -71,10 +70,6 @@ public abstract class ExodiusEngine extends Application {
 		window.show();
 	}
 	
-	public ExodiusEngine getEngine() {
-		return this;
-	}
-	
 	public int getWidth() {
 		return width;
 	}
@@ -82,28 +77,12 @@ public abstract class ExodiusEngine extends Application {
 	public int getHeight() {
 		return height;
 	}
-
-	public GraphicsContext getGraphics() {
-		return this.gfx;
-	}
-	
-	public Runtime getRuntime() {
-		return this.run;
-	}
 	
 	public LayerManager getLayerManager() {
 	    return this.layerManager;
 	}
 	
-	public InputManager getInputManager() {
-		return this.inputManager;
-	}
-	
-	protected void setMainClass(Class<?> s) {
-		this.m = s;
-	}
-	
-	public Class<?> mainClass() {
-		return this.m;
+	public String getVersion() {
+		return version;
 	}
 }

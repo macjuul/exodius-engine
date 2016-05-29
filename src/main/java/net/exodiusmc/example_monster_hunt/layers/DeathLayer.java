@@ -7,8 +7,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.engine.util.FileUtils;
+import net.exodiusmc.engine.layers.Layer;
 import net.exodiusmc.example_monster_hunt.Main;
 
 public class DeathLayer implements Layer {

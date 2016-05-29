@@ -15,7 +15,7 @@ public class Runtime extends AnimationTimer {
 	
 	public Runtime(ExodiusEngine engine) {
 		this.engine = engine;
-		this.gfx = engine.getGraphics();
+		this.gfx = engine.gfx;
 	}
 
 	@Override

@@ -1,12 +1,13 @@
 package net.exodiusmc.example_monster_hunt.entity.living;
 
 import javafx.scene.input.KeyCode;
+import net.exodiusmc.engine.InputManager;
 import net.exodiusmc.engine.Location;
+import net.exodiusmc.engine.util.GeneralUtils;
+import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
-import net.exodiusmc.engine.shape.Rectangle;
-import net.exodiusmc.engine.util.CoreUtils;
-import net.exodiusmc.engine.util.FileUtils;
+import net.exodiusmc.engine.Rectangle;
 import net.exodiusmc.example_monster_hunt.Main;
 import net.exodiusmc.example_monster_hunt.SwordDirection;
 import net.exodiusmc.example_monster_hunt.entity.EntityType;
@@ -41,11 +42,7 @@ public class Hero extends LivingEntity {
 		return this.sprite;
 	}
 	
-	public void death() {
-		CoreUtils.setTimeout(100L, () -> {
-			Main.engine.getLayerManager().add(new DeathLayer(Main.getMain().score));
-		});
-	}
+	public void death() {}
 	
 	public void move(Direction d, Rectangle field) {
 		switch(d) {
@@ -69,32 +66,39 @@ public class Hero extends LivingEntity {
 			break;
 		}
 		
-		if(Main.getInputMngr().isKeyPressed(KeyCode.UP)
-		&& Main.getInputMngr().isKeyPressed(KeyCode.RIGHT)) {
+		InputManager input = InputManager.getManager();
+		
+		if(input.isKeyPressed(KeyCode.UP)
+		&& input.isKeyPressed(KeyCode.RIGHT)) {
 			this.swordFacing = SwordDirection.UP_RIGHT;
-		} else if(Main.getInputMngr().isKeyPressed(KeyCode.RIGHT)
-		&& Main.getInputMngr().isKeyPressed(KeyCode.DOWN)) {
+		} else if(input.isKeyPressed(KeyCode.RIGHT)
+		&& input.isKeyPressed(KeyCode.DOWN)) {
 			this.swordFacing = SwordDirection.RIGHT_DOWN;
-		} else if(Main.getInputMngr().isKeyPressed(KeyCode.DOWN)
-		&& Main.getInputMngr().isKeyPressed(KeyCode.LEFT)) {
+		} else if(input.isKeyPressed(KeyCode.DOWN)
+		&& input.isKeyPressed(KeyCode.LEFT)) {
 			this.swordFacing = SwordDirection.DOWN_LEFT;
-		} else if(Main.getInputMngr().isKeyPressed(KeyCode.LEFT)
-		&& Main.getInputMngr().isKeyPressed(KeyCode.UP)) {
+		} else if(input.isKeyPressed(KeyCode.LEFT)
+		&& input.isKeyPressed(KeyCode.UP)) {
 			this.swordFacing = SwordDirection.LEFT_UP;
 		} else {
 			this.swordFacing = SwordDirection.valueOf(this.facing.toString());
 		}
 	}
 	
-	public void damageHero(int a) {
+	public boolean damageHero(int a, int score) {
 		this.setHealth(this.getHealth() - a);
 		this.dmgTick = 3;
 		this.hpBarTick = 0;
 		if(this.getHealth() <= 0) {
 			this.setHealth(0);
-			death();
-			Main.getMain().score = 0;
+			
+			GeneralUtils.setTimeout(100L, () -> {
+				Main.engine.getLayerManager().add(new DeathLayer(score));
+			});
+			
+			return true;
 		}
+		return false;
 	}
 
 	public HeroType getType() {

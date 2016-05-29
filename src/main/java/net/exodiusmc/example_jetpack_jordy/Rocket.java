@@ -1,8 +1,8 @@
 package net.exodiusmc.example_jetpack_jordy;
 
 import net.exodiusmc.engine.Location;
-import net.exodiusmc.engine.shape.Rectangle;
-import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.engine.util.GeneralUtils;
+import net.exodiusmc.engine.v1_0.shape.Rectangle;
 
 public class Rocket {
 	private Location pos;
@@ -12,7 +12,7 @@ public class Rocket {
 	
 	public Rocket(Location pos) {
 		this.pos = pos;
-		this.speed_mod = CoreUtils.randomDoubleInRange(1, 1.4);
+		this.speed_mod = GeneralUtils.randomDoubleInRange(1, 1.4);
 	}
 	
 	public Location getPosition() {

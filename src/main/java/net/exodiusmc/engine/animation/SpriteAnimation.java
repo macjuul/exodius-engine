@@ -1,7 +1,7 @@
 package net.exodiusmc.engine.animation;
 
 import javafx.scene.image.Image;
-import net.exodiusmc.engine.util.FileUtils;
+import net.exodiusmc.engine.util.RenderUtils;
 
 public class SpriteAnimation {
 	private Image img;
@@ -75,15 +75,15 @@ public class SpriteAnimation {
 		Image sub;
 		if(this.horizontal) {
 			if(this.customFrameOrder) {
-				sub = FileUtils.getSubImage(this.img, (int) (this.width * this.frameOrder[this.customFrameOrderIndex]), 0, (int) this.width, (int) this.height);
+				sub = RenderUtils.getSubImage(this.img, (int) (this.width * this.frameOrder[this.customFrameOrderIndex]), 0, (int) this.width, (int) this.height);
 			} else {
-				sub = FileUtils.getSubImage(this.img, (int) (this.width * this.currentFrame), 0, (int) this.width, (int) this.height);
+				sub = RenderUtils.getSubImage(this.img, (int) (this.width * this.currentFrame), 0, (int) this.width, (int) this.height);
 			}
 		} else {
 			if(this.customFrameOrder) {
-				sub = FileUtils.getSubImage(this.img, 0, (int) (this.height * this.frameOrder[this.customFrameOrderIndex]), (int) this.width, (int) this.height);
+				sub = RenderUtils.getSubImage(this.img, 0, (int) (this.height * this.frameOrder[this.customFrameOrderIndex]), (int) this.width, (int) this.height);
 			} else {
-				sub = FileUtils.getSubImage(this.img, 0, (int) (this.height * this.currentFrame), (int) this.width, (int) this.height);
+				sub = RenderUtils.getSubImage(this.img, 0, (int) (this.height * this.currentFrame), (int) this.width, (int) this.height);
 			}
 		}
 		

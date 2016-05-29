@@ -3,7 +3,7 @@ package net.exodiusmc.example_monster_hunt.entity;
 import java.util.ArrayList;
 
 import net.exodiusmc.engine.Location;
-import net.exodiusmc.engine.shape.Rectangle;
+import net.exodiusmc.engine.Rectangle;
 import net.exodiusmc.example_monster_hunt.entity.living.Hero;
 
 public abstract class LivingEntity extends Entity {

@@ -10,12 +10,12 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import net.exodiusmc.engine.Location;
-import net.exodiusmc.engine.animation.SpriteAnimation;
-import net.exodiusmc.engine.layers.Layer;
-import net.exodiusmc.engine.shape.Rectangle;
-import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.engine.util.GeneralUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.engine.util.RenderUtils;
+import net.exodiusmc.engine.v1_0.animation.SpriteAnimation;
+import net.exodiusmc.engine.v1_0.layers.Layer;
+import net.exodiusmc.engine.v1_0.shape.Rectangle;
 import net.exodiusmc.example_jetpack_jordy.Cloud;
 import net.exodiusmc.example_jetpack_jordy.Main;
 import net.exodiusmc.example_jetpack_jordy.Rocket;
@@ -190,7 +190,7 @@ public class GameLayer implements Layer {
 		player_collision.moveWithTopLeft(new Location(110, player_pos - 77));
 		
 		if(frame % 4 == 0 && rising) {
-			Image img = (Image) CoreUtils.arrayRand(cloud_images);
+			Image img = (Image) GeneralUtils.arrayRand(cloud_images);
 			clouds.add(new Cloud(img, new Location(70, this.player_pos)));
 		}
 		
@@ -234,7 +234,7 @@ public class GameLayer implements Layer {
 			} else if(frame % 4 == 0) {
 				Location p = r.getPosition();
 				
-				Image img = (Image) CoreUtils.arrayRand(cloud_images);
+				Image img = (Image) GeneralUtils.arrayRand(cloud_images);
 				clouds.add(new Cloud(img, p.clone().add(30, -34)));
 			}
 		}

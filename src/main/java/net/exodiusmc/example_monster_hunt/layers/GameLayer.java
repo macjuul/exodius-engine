@@ -13,11 +13,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import net.exodiusmc.engine.InputManager;
 import net.exodiusmc.engine.Location;
+import net.exodiusmc.engine.Rectangle;
 import net.exodiusmc.engine.animation.SpriteAnimation;
 import net.exodiusmc.engine.enums.Direction;
 import net.exodiusmc.engine.layers.Layer;
-import net.exodiusmc.engine.shape.Rectangle;
-import net.exodiusmc.engine.util.CoreUtils;
+import net.exodiusmc.engine.util.GeneralUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.engine.util.RenderUtils;
 import net.exodiusmc.example_monster_hunt.Main;
@@ -71,6 +71,7 @@ public class GameLayer implements Layer {
     private AudioClip bow;
     private AudioClip arrow_hit;
     private AudioClip hit;
+    private int score;
     
     public ArrayList<Entity> entities;
     
@@ -89,7 +90,6 @@ public class GameLayer implements Layer {
         this.sword = FileUtils.LoadImage("sword.png");
         this.arrow = FileUtils.LoadImage("arrow.png");
         this.playField = new Rectangle(new Location(50, 50), new Location(564, 525));
-        this.input = Main.getInputMngr();
         this.heroSprite = new SpriteAnimation(heroImg, 5);
         this.monsterSprite = new SpriteAnimation(monsterImg, 5);
         this.skeletonSprite = new SpriteAnimation(skeletonImg, 3);
@@ -148,11 +148,11 @@ public class GameLayer implements Layer {
 	    	}
 	    	
 	    	if(frame % 90 == 0) {
-	    		if(CoreUtils.randomIntInRange(0, 8) == 0) this.entities.add(new HeartPower(this.playField));
+	    		if(GeneralUtils.randomIntInRange(0, 8) == 0) this.entities.add(new HeartPower(this.playField));
 	    	}
 	    	
 	    	if(frame % 120 == 0) {
-	    		if(CoreUtils.randomIntInRange(0, 20) == 0) this.entities.add(new HeartExtra(this.playField));
+	    		if(GeneralUtils.randomIntInRange(0, 20) == 0) this.entities.add(new HeartExtra(this.playField));
 	    	}
 	    	
     		sortEntities();
@@ -190,7 +190,7 @@ public class GameLayer implements Layer {
 	    			le.damageId = this.swordId;
 	    			
 	    			if(((LivingEntity) m).damage(1)) {
-		    			Main.getMain().score++;
+		    			this.score++;
 		    			i.remove();
 		    			
 		    			switch(m.getEntityType()) {
@@ -231,9 +231,11 @@ public class GameLayer implements Layer {
 					case DEMON:
 					case MONSTER:
 						if(m.getLocation().distance(heroLoc) < 30) {
+							this.hit.play();
 							if(this.hero.dmgTick == 0) {
-								this.hero.damageHero(1);
-								this.hit.play();
+								if(this.hero.damageHero(1, this.score)) {
+									score = 0; // Player died
+								}
 							}
 						} else {
 							((LivingEntity) m).moveTo(this.playField, this.hero.getLocation(), this.entities);
@@ -285,11 +287,11 @@ public class GameLayer implements Layer {
 	    		this.hero.dmgTick = 0;
 	    	};
 	    	
-	    	if(Main.getInputMngr().isKeyPressed(KeyCode.SPACE) && this.hero.attackTick == 0) {
+	    	if(InputManager.getManager().isKeyPressed(KeyCode.SPACE) && this.hero.attackTick == 0) {
 	    		this.hero.attackTick = 40;
 	    		this.swordRot = 0;
 	    		this.swordActive = true;
-	    		this.swordId = CoreUtils.randomIntInRange(0, 300);
+	    		this.swordId = GeneralUtils.randomIntInRange(0, 300);
 	    		this.swordFade = 0;
 	    		this.swordDir = this.hero.swordFacing.getBaseRotation();
 	    		this.swoosh.play();
@@ -328,7 +330,7 @@ public class GameLayer implements Layer {
 		Image monSprite = monsterSprite.nextFrame(this.updateMonsterSprite);
 		Image skelSprite = skeletonSprite.nextFrame(this.updateMonsterSprite);
 		Image demSprite = demonSprite.nextFrame(this.updateMonsterSprite);
-		sprite = FileUtils.colorizeImage(sprite, Color.RED, this.hero.dmgTick);
+		sprite = RenderUtils.colorizeImage(sprite, Color.RED, this.hero.dmgTick);
 		/* Gameplay */
 		gfx.drawImage(groundImg, 0, 0, groundImg.getWidth() * 0.3, groundImg.getHeight()  * 0.3);
 		
@@ -396,9 +398,9 @@ public class GameLayer implements Layer {
 		gfx.drawImage(this.monsterHead, 38, 68, 38, 38);
 		gfx.setFill(Color.YELLOW);
 		gfx.setFont(this.scoreFont);
-		gfx.fillText(String.valueOf(Main.getMain().score), 83, 95);
+		gfx.fillText(String.valueOf(this.score), 83, 95);
 		gfx.setStroke(Color.YELLOW);
-		gfx.strokeText(String.valueOf(Main.getMain().score), 83, 95);
+		gfx.strokeText(String.valueOf(this.score), 83, 95);
 		
 		for(int h = 0; h < this.hero.getHealth(); h++) {
 			gfx.drawImage(this.heartFull, 42 + ((this.heartSize + 2) * h), 45, this.heartSize, this.heartSize);
@@ -433,10 +435,6 @@ public class GameLayer implements Layer {
 	    	}
 		}
 		return false;
-	}
-	
-	public void score() {
-		Main.getMain().score++;
 	}
 
 	@Override
