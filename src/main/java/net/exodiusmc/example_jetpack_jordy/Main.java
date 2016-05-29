@@ -21,8 +21,6 @@ public class Main extends ExodiusEngine {
 		
 		Logger.getLogger().info("Starting Jetpack Jordy, running Exodius Engine version " + getVersion());
 		
-		Main.input = getInputManager();
-		
 		window.setTitle("Jetpack Jordy");
 		window.setResizable(false);
 		window.setHeight(HEIGHT);

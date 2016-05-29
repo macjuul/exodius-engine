@@ -67,6 +67,7 @@ public class Location {
 	 * @param amount The amount to move into the given direction
 	 * @return Location
 	 */
+	@SuppressWarnings("incomplete-switch")
 	public Location move(Direction d, double a) {
 		switch(d) {
 		case DOWN:

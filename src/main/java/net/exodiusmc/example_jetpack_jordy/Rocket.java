@@ -1,8 +1,8 @@
 package net.exodiusmc.example_jetpack_jordy;
 
 import net.exodiusmc.engine.Location;
+import net.exodiusmc.engine.Rectangle;
 import net.exodiusmc.engine.util.GeneralUtils;
-import net.exodiusmc.engine.v1_0.shape.Rectangle;
 
 public class Rocket {
 	private Location pos;

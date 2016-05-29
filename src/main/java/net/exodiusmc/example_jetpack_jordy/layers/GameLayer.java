@@ -13,9 +13,9 @@ import net.exodiusmc.engine.Location;
 import net.exodiusmc.engine.util.GeneralUtils;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.engine.util.RenderUtils;
-import net.exodiusmc.engine.v1_0.animation.SpriteAnimation;
-import net.exodiusmc.engine.v1_0.layers.Layer;
-import net.exodiusmc.engine.v1_0.shape.Rectangle;
+import net.exodiusmc.engine.animation.SpriteAnimation;
+import net.exodiusmc.engine.layers.Layer;
+import net.exodiusmc.engine.Rectangle;
 import net.exodiusmc.example_jetpack_jordy.Cloud;
 import net.exodiusmc.example_jetpack_jordy.Main;
 import net.exodiusmc.example_jetpack_jordy.Rocket;
@@ -41,8 +41,6 @@ public class GameLayer implements Layer {
 			FileUtils.LoadImage("/cloud/5.png"),
 			FileUtils.LoadImage("/cloud/6.png")
 	};
-	
-	private boolean render = true;
 	
 	private Rectangle rec1 = new Rectangle(new Location(100, 100), 100, 100);
 	private Rectangle rec2 = new Rectangle(new Location(150, 150), 100, 100);
