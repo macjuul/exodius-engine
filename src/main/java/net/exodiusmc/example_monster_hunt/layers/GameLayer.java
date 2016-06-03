@@ -55,7 +55,6 @@ public class GameLayer implements Layer {
     private SpriteAnimation demonSprite;
     private Image normalSkeletonSprite;
     private Rectangle playField;
-    private InputManager input;
     private boolean updateSprite;
     private boolean updateMonsterSprite;
     private Font scoreFont;
@@ -425,7 +424,7 @@ public class GameLayer implements Layer {
 	
 	private boolean handleMovement(KeyCode[] kl, Direction d) {
 		for(KeyCode k : kl) {
-			if(input.isKeyPressed(k)) {
+			if(InputManager.getManager().isKeyPressed(k)) {
 				this.hero.saveLocation();
 	    		this.hero.move(d, this.playField);
 	    		if(!this.playField.contains(this.hero.getLocation())) {

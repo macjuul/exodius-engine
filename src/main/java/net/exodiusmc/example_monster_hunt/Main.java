@@ -2,6 +2,7 @@ package net.exodiusmc.example_monster_hunt;
 
 import javafx.stage.Stage;
 import net.exodiusmc.engine.ExodiusEngine;
+import net.exodiusmc.engine.InputManager;
 import net.exodiusmc.engine.Runtime;
 import net.exodiusmc.engine.util.FileUtils;
 import net.exodiusmc.example_monster_hunt.layers.GameLayer;
@@ -18,6 +19,8 @@ public class Main extends ExodiusEngine {
 	public void init(Stage window, Runtime run) {
 	    FileUtils.setResourceDirectory("net/exodiusmc/example_monster_hunt/");
 	    Main.window = window;
+	    
+	    InputManager.intialize(window);
 	    
 	    window.setResizable(false);
 	    
